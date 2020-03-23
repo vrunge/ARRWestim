@@ -1,2 +1,6 @@
 importFrom("stats", "rnorm", "rpois")
 exportPattern("^[[:alpha:]]+")
+
+importFrom("graphics", "abline", "par", "plot")
+    importFrom("stats", "mad")
+

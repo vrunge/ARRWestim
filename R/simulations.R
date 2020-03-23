@@ -1,6 +1,6 @@
 
-library(parallel)
-cores <- detectCores()
+#library(parallel)
+#cores <- detectCores()
 #cores <- 40
 
 #############
@@ -21,21 +21,21 @@ one.simu <- function(i, n = 10^5, phi = 0.5, sdEta2 = 1, sdNu2 = 1, nbK, poisPar
 
 
 #########################################################################
-nbSimu <- 100
-df_test <- NULL
-for(i in 1:10)
-{
-  lres_1 <- mclapply(1:nbSimu, FUN = one.simu,
-                      n = 10^5,
-                      phi = 0.1,
-                      sdEta2 = 1,
-                      sdNu2 = i,
-                      nbK = 10,
-                      mc.cores = cores)
-  df_test <- rbind(df_test, do.call(rbind, lres_1))
-}
-df_test
+#nbSimu <- 100
+#df_test <- NULL
+#for(i in 1:10)
+#{
+#  lres_1 <- mclapply(1:nbSimu, FUN = one.simu,
+#                      n = 10^5,
+#                      phi = 0.1,
+#                     sdEta2 = 1,
+#                      sdNu2 = i,
+#                      nbK = 10,
+#                      mc.cores = cores)
+#df_test <- rbind(df_test, do.call(rbind, lres_1))
+#}
+#df_test
 
 
 
-save(df_test, file="df_test.Rdata")
+#save(df_test, file="df_test.Rdata")
