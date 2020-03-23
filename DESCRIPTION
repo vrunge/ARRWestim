@@ -1,0 +1,10 @@
+Package: ARRWestim
+Type: Package
+Title: Estimation of the parameters for the Randow Walk + AR(1) model for time-series
+Version: 0.1.0
+Author: Vincent RUNGE
+Maintainer: vincent Runge <vincent.runge@univ-evry.fr>
+Description: Some simple functions to robustly estimate the unknown parameters of our model: the 2 variances and the AR(1) parameters
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
