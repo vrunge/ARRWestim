@@ -1,5 +1,8 @@
 # ARRWestim : An example
 
+### To install the package from github
+devtools::install_github("vrunge/ARRWestim")
+
 ### chose parameters
 n <- 10000
 phi <- 0.2
