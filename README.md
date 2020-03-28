@@ -1,4 +1,4 @@
-# ARRWestim : an example
+# ARRWestim : An example
 
 ### chose parameters
 n <- 10000
@@ -7,7 +7,7 @@ sdEta2 <- 10
 sdNu2 <- 50
 
 ### GENERATE DATA
-y <- dataARRW(n = n, poisParam = 0.001, meanGap = 2, phi = phi, sdEta2 = sdEta2, sdNu2 = sdNu2)
+y <- dataARRW(n = n, sdEta2 = sdEta2, sdNu2 = sdNu2, phi = phi, poisParam = 0.001, meanGap = 2)
 
 ###  plot the time-series
 plotARRW(y)
@@ -19,10 +19,9 @@ plotARRWdiff(y)
 nb <- 10
 v <- estimVar(y$y, nbK = nb)
 
-#### find all parameters
+#### find all parameters (the AR and RW variances and phi AR(1) autocorrelation parameter)
 bestParameters(v = v, nbK = nb)
 
-
 ###  compare data for the least-square criterion
-plotVarVarEstim(v, sdEta2, sdNu2, phi, nbK = nbK)
+plotVarVarEstim(v, sdEta2, sdNu2, phi, nbK = nb)
 

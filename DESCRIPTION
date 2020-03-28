@@ -4,7 +4,7 @@ Title: Estimation of the parameters for the ARRW (Autoregressive AR(1) and Rando
 Version: 0.1.0
 Authors@R: c(person("Vincent", "Runge", email = "vincent.runge@univ-evry.fr", role = c("aut", "cre")))
 Maintainer: Vincent Runge <vincent.runge@univ-evry.fr>
-Description: Functions to robustly estimate the unknown parameters of our model: the 2 variances and the AR(1) parameters. We also have plotting functions to better analyse our method.
+Description: Functions to robustly estimate the parameters for the ARRW (Autoregressive AR(1) and Random Walk) model for time-series. The unknown parameters of our model are the 2 variances (one for AR, one for RW) and the AR(1) parameters. We also have plotting functions to better analyse our method. The robust estimation is performed via the MAD estimator.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
