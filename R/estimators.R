@@ -1,7 +1,12 @@
 
-
+#' estimVar
+#' @description Estimation of the variances for the diff k operator k = 1 to nbK
+#' @param y An object created by the dataARRW function
+#' @param nbK number of diff k elements to consider
+#' @return a list with a varEst element (= a vector)
 estimVar <- function(y, nbK = 10)
 {
+  n <- length(y)
   varEst <- rep(0, nbK)
   for(k in 1:nbK)
   {
@@ -13,10 +18,14 @@ estimVar <- function(y, nbK = 10)
 
 
 
-###
-###  least square cost function
-###
-
+#' cost
+#' @description the least-square value
+#' @param v the estimated variances of the diff k operator
+#' @param sdEta2 the Random Walk variance
+#' @param sdNu2 the AR(1) variance
+#' @param phi the autocorrelative AR(1) parameter
+#' @param nbK number of diff k elements to consider
+#' @return the value of the sum of squares
 cost <- function(v, sdEta2, sdNu2, phi, nbK = 10)
 {
   v <- unname(unlist(v))
@@ -24,10 +33,12 @@ cost <- function(v, sdEta2, sdNu2, phi, nbK = 10)
 }
 
 
-###
-###  evalEtaNu with a given phi
-###
-
+#' evalEtaNu
+#' @description Evaluation of the variances Eta2 and Nu2
+#' @param v the estimated variances of the diff k operator
+#' @param phi the autocorrelative AR(1) parameter
+#' @param nbK number of diff k elements to consider
+#' @return a list with an estimation of the variances Eta2 and Nu2
 evalEtaNu <- function(v, phi, nbK = 10)
 {
   v <- unname(unlist(v))
@@ -46,10 +57,11 @@ evalEtaNu <- function(v, phi, nbK = 10)
 
 
 
-###
-###  bestParameters
-###
-
+#' bestParameters
+#' @description iteration of the least square criterion for a grid of the phi parameter
+#' @param v the estimated variances of the diff k operator
+#' @param nbK number of diff k elements to consider
+#' @return a list with an estimation of the best parameters for Eta2, Nu2 and phi
 bestParameters <- function(v, nbK = 10)
 {
   costall <- rep(0,100)

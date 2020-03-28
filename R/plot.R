@@ -1,7 +1,6 @@
-###
-###  plotARRW
-###
-
+#' plotARRW
+#' @description plot signal, y datapoints and changepoints on a same graph
+#' @param y An object created by the dataARRW function
 plotARRW <- function(y)
 {
   ylim <- c(min(y$mu,y$y), max(y$mu,y$y))
@@ -11,11 +10,9 @@ plotARRW <- function(y)
   abline(v = y$changepoints)
 }
 
-
-###
-###  plotARRWdiff
-###
-
+#' plotARRWdiff
+#' @description plot y_{t+1} - y_t signal and changepoint locations to identify obvious changepoints
+#' @param y An object created by the dataARRW function
 plotARRWdiff <- function(y)
 {
   z <- diff(c(0,y$y))
@@ -30,7 +27,13 @@ plotARRWdiff <- function(y)
 
 
 
-
+#' plotVarVarEstim
+#' @description plot the estimated variances v_k against the true variances for the diff k operator (y_{t+k} - y_t) for k = 1 to nbK
+#' @param v the estimated variances of the diff k operator
+#' @param sdEta2 the Random Walk variance
+#' @param sdNu2 the AR(1) variance
+#' @param phi the autocorrelative AR(1) parameter
+#' @param nbK number of diff k elements to consider
 plotVarVarEstim <- function(v, sdEta2, sdNu2, phi, nbK = 10)
 {
   v <- v$varEst
