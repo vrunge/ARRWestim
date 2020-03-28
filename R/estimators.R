@@ -51,6 +51,20 @@ evalEtaNu <- function(v, phi, nbK = 10)
   det <- a1*b2 - a2*b1
   myEta2 <- (b2*c1 - b1*c2)/det
   myNu2 <- (-a2*c1 + a1*c2)/det
+
+  if(myEta2 < 0 || myNu2 <0)
+  {
+    if(myEta2 < 0)
+    {
+      myEta2 = 0
+      myNu2 = c2/b2
+    }
+    if(myNu2 < 0)
+    {
+      myEta2 = c1/b1
+      myNu2 = 0
+    }
+  }
   return(list(Eta2 = myEta2, Nu2 = myNu2))
 }
 
