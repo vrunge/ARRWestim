@@ -46,25 +46,23 @@ for(i in phi)
 
 
 df <- do.call(rbind, res)
-#save(df, file="df_sdEta2sdNu2Phi.RData")
+save(df, file="df_sdEta2sdNu2Phi.RData")
 
-dfmean <- aggregate(df,list(rep(1:(nrow(df)%/%nbSimu+1),each=nbSimu,len=nrow(df))),mean)[-1]
-z1 <- matrix(dfmean$`sdEta2Est%`, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
-image.plot(phi,omega2,z1)
-z2 <- matrix(dfmean$`sdNu2Est%`, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
-image.plot(phi,omega2,z2)
-z3 <- matrix(dfmean$phiEst, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
-image.plot(phi,omega2,z3)
+# analysis
 
+#dfmean <- aggregate(df,list(rep(1:(nrow(df)%/%nbSimu+1),each=nbSimu,len=nrow(df))),mean)[-1]
+#z1 <- matrix(dfmean$`sdEta2Est%`, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
+#image.plot(phi,omega2,z1)
+#z2 <- matrix(dfmean$`sdNu2Est%`, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
+#image.plot(phi,omega2,z2)
+#z3 <- matrix(dfmean$phiEst, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
+#image.plot(phi,omega2,z3)
 
-
-
-dfmean <- aggregate(df,list(rep(1:(nrow(df)%/%nbSimu+1),each=nbSimu,len=nrow(df))),sd)[-1]
-z1 <- matrix(dfmean$`sdEta2Est%`, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
-image.plot(phi,omega2,z1)
-z2 <- matrix(dfmean$`sdNu2Est%`, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
-image.plot(phi,omega2,z2)
-z3 <- matrix(dfmean$phiEst, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
-image.plot(phi,omega2,z3)
-
+#dfsd <- aggregate(df,list(rep(1:(nrow(df)%/%nbSimu+1),each=nbSimu,len=nrow(df))),sd)[-1]
+#w1 <- matrix(dfsd$`sdEta2Est%`, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
+#image.plot(phi,omega2,w1)
+#w2 <- matrix(dfsd$`sdNu2Est%`, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
+#image.plot(phi,omega2,w2)
+#w3 <- matrix(dfsd$phiEst, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
+#image.plot(phi,omega2,w3)
 
