@@ -18,7 +18,8 @@ one.simu <- function(i, n = 10^5, sdEta2 = 1, sdNu2 = 1, phi = 0.5, poisParam = 
   res <- bestParameters(v = v, nbK = nbK)
 
   #ind, n, phi, sdEta2, sdNu2, nbK, poiP, meanGap, method, mse, beta, K
-  df <- data.frame(numeric(0), numeric(0), numeric(0), numeric(0) ,stringsAsFactors = FALSE)
+  df <- data.frame(numeric(0), numeric(0), numeric(0), numeric(0), numeric(0),
+                   numeric(0), numeric(0), numeric(0), numeric(0), numeric(0), numeric(0) ,stringsAsFactors = FALSE)
   colnames(df) <- c("index", "n", "sdEta2", "sdNu2", "phi", "nbK", "poisParam", "meanGap", "sdEta2Est%", "sdNu2Est%", "phiEst")
   df[1,] <- c(i,n, sdEta2, sdNu2, phi, nbK, poisParam, meanGap,
               (res$Eta2Opt - sdEta2)/sdEta2, (res$Nu2Opt-sdNu2)/sdNu2, res$argmin - phi)
