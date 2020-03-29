@@ -48,7 +48,7 @@ for(i in phi)
 df <- do.call(rbind, res)
 save(df, file="df_sdEta2sdNu2Phi.RData")
 
-# analysis
+# analysis = some simple plots
 library(fields)
 dfmean <- aggregate(df,list(rep(1:(nrow(df)%/%nbSimu+1),each=nbSimu,len=nrow(df))),mean)[-1]
 z1 <- matrix(dfmean$`sdEta2Est%`, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
@@ -68,6 +68,7 @@ image.plot(phi,omega2,w3)
 
 
 ######################################################################
+# color scale function
 
 colScale <- function(min, max, nb, epsilon)
 {
@@ -102,6 +103,7 @@ colScale <- function(min, max, nb, epsilon)
 }
 
 ####################
+# generating a 3x2 multi plot with correct color scales
 
 library(fields)
 par(mfrow=c(3,2))
