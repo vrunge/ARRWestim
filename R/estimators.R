@@ -52,7 +52,7 @@ evalEtaNu <- function(v, phi, nbK = 10)
   myEta2 <- (b2*c1 - b1*c2)/det
   myNu2 <- (-a2*c1 + a1*c2)/det
 
-  if(myEta2 < 0 || myNu2 <0)
+  if(myEta2 < 0 || myNu2 <0) #the KKT condition with constraints phi with myEta2 >= 0 and myNu2 >=0
   {
     if(myEta2 < 0)
     {
@@ -61,7 +61,7 @@ evalEtaNu <- function(v, phi, nbK = 10)
     }
     if(myNu2 < 0)
     {
-      myEta2 = c1/b1
+      myEta2 = c1/a1
       myNu2 = 0
     }
   }
