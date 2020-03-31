@@ -1,10 +1,7 @@
-
-
-
 ### chose parameters
 n <- 10000
 phi <- 0.2
-sdEta2 <- 10
+sdEta2 <- 0
 sdNu2 <- 1
 
 ### GENERATE DATA
