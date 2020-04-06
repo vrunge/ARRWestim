@@ -31,7 +31,7 @@ and the diff-1 time-series and show the changepoints
 plotARRWdiff(y)
 ```
 
-## Variance analsis
+## Variance analysis
 
 We robustly estimate the variances of different lag-k data
 ```r
