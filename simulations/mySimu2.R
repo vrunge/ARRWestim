@@ -42,7 +42,7 @@ colScale <- function(min, max, nb, epsilon)
 
 ########### ########### ########### ###########
 
-nbSimu <- 200
+nbSimu <- 1200
 nbPhi <- 19
 nbOmega2 <- 40
 phi <- seq(from = 0, to = 0.95, length.out = nbPhi+1)
@@ -56,11 +56,11 @@ nbOmega2 <- nbOmega2 +1
 
 nb0.5 <- which(abs(omega2-0.5)==min(abs(omega2-0.5)))
 nb1 <- which(abs(omega2-1)==min(abs(omega2-1)))
-nb2 <- which(abs(omega2-2)==min(abs(omega2-2)))
-nb5 <- which(abs(omega2-5)==min(abs(omega2-5)))
+nb4 <- which(abs(omega2-4)==min(abs(omega2-4)))
+nb8 <- which(abs(omega2-8)==min(abs(omega2-8)))
 
-myscale <- c(0,0.5,1,2,5)
-positions <- c(logOmega2[1], logOmega2[nb0.5], logOmega2[nb1], logOmega2[nb2], logOmega2[nb5])
+myscale <- c(0,0.5,1,4,8)
+positions <- c(logOmega2[1], logOmega2[nb0.5], logOmega2[nb1], logOmega2[nb4], logOmega2[nb8])
 
 
 res <- NULL
@@ -105,7 +105,7 @@ par(mar = c(3,4,2,3))
 
 z1[,1] <- 0
 w1[,1] <- 0
-u1 <- colScale(min = min(z1), max = max(z1), epsilon = abs(max(z1))/4, nb = 20)
+u1 <- colScale(min = min(z1), max = max(z1), epsilon = abs(max(z1))/2, nb = 16)
 image.plot(phi,logOmega2,z1,breaks=u1$breaks, col=u1$col ,axis.args=list(cex.axis=1.3),
            main = expression(E((hat(sigma)[eta]-sigma[eta] )/ sigma[eta])),
            xlab = expression( phi ),
@@ -114,7 +114,7 @@ image.plot(phi,logOmega2,z1,breaks=u1$breaks, col=u1$col ,axis.args=list(cex.axi
            smallplot = c(0.85,0.89,0.13,0.91))
 axis(1, labels = c(0,0.2,0.4,0.6,0.8,0.95), at = c(0,0.2,0.4,0.6,0.8,0.95))
 axis(2, labels = myscale, at = positions)
-v1 <- colScale(min = 0, max = max(w1),  nb = 64)
+v1 <- colScale(min = 0, max = max(w1),  nb = 20)
 image.plot(phi,logOmega2,w1,breaks=v1$breaks, col=v1$col,axis.args=list(cex.axis=1.3),
            main = expression(SD((hat(sigma)[eta]-sigma[eta] )/ sigma[eta])),
            xlab = expression( phi ),
@@ -124,7 +124,7 @@ image.plot(phi,logOmega2,w1,breaks=v1$breaks, col=v1$col,axis.args=list(cex.axis
 axis(1, labels = c(0,0.2,0.4,0.6,0.8,0.95), at = c(0,0.2,0.4,0.6,0.8,0.95))
 axis(2, labels = myscale, at = positions)
 
-u2 <- colScale(min = min(z2), max = max(z2), epsilon = abs(min(z2)/4), nb = 20)
+u2 <- colScale(min = min(z2), max = max(z2), epsilon = abs(min(z2)), nb = 16)
 image.plot(phi,logOmega2,z2,breaks=u2$breaks, col=u2$col ,axis.args=list(cex.axis=1.3),
            main = expression(E((hat(sigma)[nu]-sigma[nu] )/ sigma[nu])),
            xlab = expression( phi ),
@@ -133,7 +133,7 @@ image.plot(phi,logOmega2,z2,breaks=u2$breaks, col=u2$col ,axis.args=list(cex.axi
            smallplot = c(0.85,0.89,0.13,0.91))
 axis(1, labels = c(0,0.2,0.4,0.6,0.8,0.95), at = c(0,0.2,0.4,0.6,0.8,0.95))
 axis(2, labels = myscale, at = positions)
-v2 <- colScale(min = 0, max = max(w2),  nb = 64)
+v2 <- colScale(min = 0, max = max(w2),  nb = 20)
 image.plot(phi,logOmega2,w2,breaks=v2$breaks, col=v2$col,axis.args=list(cex.axis=1.3),
            main = expression(SD((hat(sigma)[nu]-sigma[nu] )/ sigma[nu])),
            xlab = expression( phi ),
@@ -143,18 +143,18 @@ image.plot(phi,logOmega2,w2,breaks=v2$breaks, col=v2$col,axis.args=list(cex.axis
 axis(1, labels = c(0,0.2,0.4,0.6,0.8,0.95), at = c(0,0.2,0.4,0.6,0.8,0.95))
 axis(2, labels = myscale, at = positions)
 
-u3 <- colScale(min = min(z3), max = max(z3), epsilon = abs(max(z3)/4), nb = 20)
+u3 <- colScale(min = min(z3), max = max(z3), epsilon = abs(max(z3)/4), nb = 16)
 image.plot(phi,logOmega2,z3,breaks=u3$breaks, col=u3$col ,axis.args=list(cex.axis=1.3),
-           main = expression(E (hat(phi))),
+           main = expression(E (hat(phi) - phi)),
            xlab = expression( phi ),
            ylab = expression( omega^2 ), mgp=c(2,2,0),
            cex.lab = 1.5, cex.main = 1.5, axes = FALSE,
            smallplot = c(0.85,0.89,0.13,0.91))
 axis(1, labels = c(0,0.2,0.4,0.6,0.8,0.95), at = c(0,0.2,0.4,0.6,0.8,0.95))
 axis(2, labels = myscale, at = positions)
-v3 <- colScale(min = 0, max = max(w3),  nb = 64)
+v3 <- colScale(min = 0, max = max(w3),  nb = 12)
 image.plot(phi,logOmega2,w3,breaks=v3$breaks, col=v3$col,axis.args=list(cex.axis=1.3),
-           main = expression(SD (hat(phi))),
+           main = expression(SD (hat(phi) - phi)),
            xlab = expression( phi ),
            ylab = expression( omega^2 ),  mgp=c(2,2,0),
            cex.lab = 1.5, cex.main = 1.5, axes = FALSE,
