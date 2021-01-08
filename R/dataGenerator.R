@@ -24,3 +24,54 @@ dataARRW <- function(n = 1e3, sdEta2 = 1, sdNu2 = 1, phi = 0.9, poisParam = 0, m
   }
   return(list(y = res, mu = changes + RW, changepoints = which(changepoints > 0)))
 }
+
+
+
+#' scenarioGenerator
+#' @description Generate model for ARRW
+#' @param N number of data points
+#' @param type 4 possible scenario
+#' @param nbSeg number of segments
+#' @param jumpSize Max size of the jumps
+#' @param seed default seed is 42
+#' @return a vector of piecewise constant segment
+#' @examples
+#' s <- scenarioGenerator(100, "rand1", nbSeg = 20)
+scenarioGenerator <- function(N, type = c("none", "up", "updown", "rand1"), nbSeg = 20, jumpSize = 1, seed = 42)
+{
+  #segment length
+  set.seed(seed)
+  rand1CP <- rpois(nbSeg, lambda = 10)
+  r1 <- pmax(round(rand1CP * N / sum(rand1CP)), 1) #normalisation (delete 0 values)
+  s <- sum(r1)
+  if(s > N)
+  {
+    while(sum(r1) > N)
+    {
+      p <- sample(x = nbSeg, size = 1)
+      if(r1[p]> 1){r1[p] <- r1[p] - 1}
+    }
+  }
+
+  if(s < N)
+  {
+    for(i in 1:(N-s))
+    {
+      p <- sample(x = nbSeg, size = 1)
+      r1[p] <- r1[p] + 1
+    }
+  }
+
+  #jump intensity
+  set.seed(seed + 1)
+  rand1Jump <- runif(nbSeg, min = -1, max = 1)
+
+  type <- match.arg(type)
+  switch(
+    type,
+    none = rep(0, N),
+    up = unlist(lapply(0:(nbSeg-1), function (k) rep(k * jumpSize, N * 1 / nbSeg))),
+    updown = unlist(lapply(0:(nbSeg-1), function(k) rep((k %% 2) * jumpSize, N * 1 / nbSeg))),
+    rand1 = unlist(sapply(1:nbSeg, function(i) rep(rand1Jump[i] * jumpSize, r1[i])))
+  )
+}
