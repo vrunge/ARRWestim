@@ -4,6 +4,7 @@ library(parallel)
 library(fields)
 cores <- detectCores()
 cores <- 45
+cores <- 1
 
 ######################################################################
 # color scale function
@@ -43,6 +44,7 @@ colScale <- function(min, max, nb, epsilon)
 ########### ########### ########### ###########
 
 nbSimu <- 1200
+nbSimu = 5
 nbPhi <- 19
 nbOmega2 <- 40
 phi <- seq(from = 0, to = 0.95, length.out = nbPhi+1)

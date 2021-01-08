@@ -4,15 +4,16 @@
 \alias{bestParameters}
 \title{bestParameters}
 \usage{
-bestParameters(v, nbK = 10)
+bestParameters(y, nbK = 10)
 }
 \arguments{
-\item{v}{the estimated variances of the diff k operator}
+\item{y}{A time-series obtained by the dataRWAR function}
 
 \item{nbK}{number of diff k elements to consider}
 }
 \value{
 a list with an estimation of the best parameters for Eta2, Nu2 and phi
+bestParameters(dataRWAR(10000, sdEta2 = 0.2, sdNu2 = 0.1, phi = 0.3, type = "rand1",  nbSeg = 10,seed = sample(10000,1))$y)
 }
 \description{
 iteration of the least square criterion for a grid of the phi parameter

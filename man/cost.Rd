@@ -2,9 +2,9 @@
 % Please edit documentation in R/estimators.R
 \name{cost}
 \alias{cost}
-\title{cost}
+\title{L2 error estimation}
 \usage{
-cost(v, sdEta2, sdNu2, phi, nbK = 10)
+cost(v, sdEta2, sdNu2, phi)
 }
 \arguments{
 \item{v}{the estimated variances of the diff k operator}
@@ -14,8 +14,6 @@ cost(v, sdEta2, sdNu2, phi, nbK = 10)
 \item{sdNu2}{the AR(1) variance}
 
 \item{phi}{the autocorrelative AR(1) parameter}
-
-\item{nbK}{number of diff k elements to consider}
 }
 \value{
 the value of the sum of squares

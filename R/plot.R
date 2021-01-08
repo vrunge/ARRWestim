@@ -36,7 +36,6 @@ plotARRWdiff <- function(y)
 #' @param nbK number of diff k elements to consider
 plotVarVarEstim <- function(v, sdEta2, sdNu2, phi, nbK = 10)
 {
-  v <- v$varEst
   #### ESTIM var
   vari <- rep(0,nbK)
   for(k in 1:nbK)

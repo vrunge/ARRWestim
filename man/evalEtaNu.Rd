@@ -2,16 +2,14 @@
 % Please edit documentation in R/estimators.R
 \name{evalEtaNu}
 \alias{evalEtaNu}
-\title{evalEtaNu}
+\title{RW and AR(1) variance estimations with fixed AR(1) parameter}
 \usage{
-evalEtaNu(v, phi, nbK = 10)
+evalEtaNu(v, phi)
 }
 \arguments{
 \item{v}{the estimated variances of the diff k operator}
 
 \item{phi}{the autocorrelative AR(1) parameter}
-
-\item{nbK}{number of diff k elements to consider}
 }
 \value{
 a list with an estimation of the variances Eta2 and Nu2

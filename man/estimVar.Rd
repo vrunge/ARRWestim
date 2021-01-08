@@ -2,18 +2,21 @@
 % Please edit documentation in R/estimators.R
 \name{estimVar}
 \alias{estimVar}
-\title{estimVar}
+\title{Variance estimation for diff k operators}
 \usage{
 estimVar(y, nbK = 10)
 }
 \arguments{
-\item{y}{An object created by the dataARRW function}
+\item{y}{A time-series obtained by the dataRWAR function}
 
 \item{nbK}{number of diff k elements to consider}
 }
 \value{
-a list with a varEst element (= a vector)
+the vector varEst of estimated variances
 }
 \description{
 Estimation of the variances for the diff k operator k = 1 to nbK
+}
+\examples{
+estimVar(dataRWAR(1000, sdEta2 = 0.1, sdNu2 = 0.1, phi = 0.3, type = "rand1",  nbSeg = 10)$y)
 }

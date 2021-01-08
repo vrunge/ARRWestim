@@ -1,4 +1,4 @@
-importFrom("stats", "rnorm", "rpois")
+importFrom("stats", "rnorm", "rpois", "runif")
 exportPattern("^[[:alpha:]]+")
 
 importFrom("graphics", "abline", "par", "plot")
