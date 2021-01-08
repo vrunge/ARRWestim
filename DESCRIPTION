@@ -8,4 +8,5 @@ Description: Functions to robustly estimate the parameters for the ARRW (Autoreg
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1
+Depends: R (>= 3.5.0)
