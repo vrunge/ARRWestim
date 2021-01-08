@@ -81,3 +81,4 @@ dataRWAR <- function(N = 1e3,
   }
   return(list(y = y, mu = model + RW, changepoints = which(diff(model) != 0)))
 }
+

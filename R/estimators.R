@@ -83,5 +83,5 @@ bestParameters <- function(y, nbK = 10)
   }
   argmin <- which.min(costall)
   e <- evalEtaNu(v, (argmin-1)/100)
-  return(list(costall = costall,Eta2Opt = e$Eta2, Nu2Opt = e$Nu2, argmin = (argmin-1)/100))
+  return(list(Eta2Opt = e$Eta2, Nu2Opt = e$Nu2, argmin = (argmin-1)/100))
 }
