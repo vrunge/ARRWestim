@@ -11,15 +11,17 @@ library(fields)
 ###
 cores <- detectCores()
 #cores <- 45
-cores <- 1 ###CHANGE
+cores <- 8 ###CHANGE
 
 ###
 ### Simulations parameters
 ###
 #nbSimu <- 1200
-nbSimu <- 200 ###CHANGE
+nbSimu <- 1000 ###CHANGE
 nbPhi <- 19 #step size = 0.05 in phi
 nbOmega2 <- 40
+nbK <- 10
+
 
 ###
 ### phi and omega2 = grid for simulations (omega2 = (sd_eta/sd_nu)^2)
@@ -84,6 +86,15 @@ colScale <- function(min, max, nb, epsilon)
   return(list(col = colorTable, breaks = brks))
 }
 
+
+grayScale <- function(max, nb)
+{
+  colorTable <- designer.colors(nb-1, c("white", "black"))
+  brks<- seq(0, max, length.out = nb)
+  return(list(col = colorTable, breaks = brks))
+}
+
+
 ########### ########### ########### ###########
 
 res1 <- NULL
@@ -98,8 +109,8 @@ for(i in phi)
                            phi = i,
                            nbSeg = 1,
                            jumpSize = 0,
-                           nbK = 10,
-                           mc.cores = 1)) ## mc.cores = 8
+                           nbK = nbK,
+                           mc.cores = 8)) ## mc.cores = 8
   }
   print(i)
 }
@@ -121,8 +132,8 @@ for(i in phi)
                            type = "rand1",
                            nbSeg = 50,
                            jumpSize = 10,
-                           nbK = 10,
-                           mc.cores = 1)) ## mc.cores = 8
+                           nbK = nbK,
+                           mc.cores = 8)) ## mc.cores = 8
   }
   print(i)
 }
@@ -141,8 +152,8 @@ for(i in phi)
                              type = "rand1",
                              nbSeg = 100,
                              jumpSize = 10,
-                             nbK = 10,
-                             mc.cores = 1)) ## mc.cores = 8
+                             nbK = nbK,
+                             mc.cores = 8)) ## mc.cores = 8
   }
   print(i)
 }
@@ -152,7 +163,7 @@ for(i in phi)
 
 
 df <- do.call(rbind, res1)
-save(df, file="df_sdEtasdNuPhi_NOCHANGE.RData")
+save(df, file="df_sdEtasdNuPhi_noCHANGE.RData")
 
 dfr1 <- do.call(rbind, res2)
 save(dfr1, file="df_sdEtasdNuPhi_rand1_50CHANGES.RData")
@@ -223,7 +234,7 @@ plotSimu <- function(z1, w1, z2, w2, z3, w3,
   axis(1, labels = c(0,0.2,0.4,0.6,0.8,0.95), at = c(0,0.2,0.4,0.6,0.8,0.95))
   axis(2, labels = .myscale, at = .positions)
 
-  v1 <- colScale(min = 0, max = max(w1),  nb = 20)
+  v1 <- grayScale(max = max(w1),  nb = 20)
   image.plot(.phi, .logOmega2,w1,breaks=v1$breaks, col=v1$col,axis.args=list(cex.axis=1.2),
              main = expression(SD((hat(sigma)[eta]-sigma[eta] )/ sigma[eta])),
              xlab = expression( phi ),
@@ -244,7 +255,7 @@ plotSimu <- function(z1, w1, z2, w2, z3, w3,
   axis(1, labels = c(0,0.2,0.4,0.6,0.8,0.95), at = c(0,0.2,0.4,0.6,0.8,0.95))
   axis(2, labels = .myscale, at = .positions)
 
-  v2 <- colScale(min = 0, max = max(w2),  nb = 20)
+  v2 <- grayScale(max = max(w2),  nb = 20)
   image.plot(.phi, .logOmega2,w2,breaks=v2$breaks, col=v2$col,axis.args=list(cex.axis=1.2),
              main = expression(SD((hat(sigma)[nu]-sigma[nu] )/ sigma[nu])),
              xlab = expression( phi ),
@@ -265,7 +276,7 @@ plotSimu <- function(z1, w1, z2, w2, z3, w3,
   axis(1, labels = c(0,0.2,0.4,0.6,0.8,0.95), at = c(0,0.2,0.4,0.6,0.8,0.95))
   axis(2, labels = .myscale, at = .positions)
 
-  v3 <- colScale(min = 0, max = max(w3),  nb = 12)
+  v3 <- grayScale(max = max(w3),  nb = 20)
   image.plot(.phi, .logOmega2,w3,breaks=v3$breaks, col=v3$col,axis.args=list(cex.axis=1),
              main = expression(SD (hat(phi) - phi)),
              xlab = expression( phi ),
