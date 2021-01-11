@@ -1,12 +1,12 @@
 ### chose parameters
 n <- 5000
-sdEta <- 1
+sdEta <- 2
 sdNu <- 1
 phi <- 0.4
 
 ### GENERATE DATA
 y <- dataRWAR(N = n, sdEta = sdEta, sdNu = sdNu, phi = phi,
-              type = "rand1",  nbSeg = 50, jumpSize = 5,
+              type = "rand1",  nbSeg = 50, jumpSize = 10,
               seed = sample(1e5,1))
 
 ###  plot the time-series
