@@ -1,4 +1,3 @@
-
 scenarioGenerator <- function(N, type = c("none", "up", "updown", "rand1"), nbSeg = 20, jumpSize = 1, seed = 42)
 {
   #segment length
@@ -66,7 +65,7 @@ scenarioGenerator <- function(N, type = c("none", "up", "updown", "rand1"), nbSe
 #' \item{\code{changepoints}}{the changepoint indices}
 #' }
 #' @examples
-#' myData <- dataRWAR(1000, sdEta = 0.01, sdNu = 0.01, type = "rand1",  nbSeg = 10)
+#' myData <- dataRWAR(1000, sdEta = 0.1, sdNu = 0.1, type = "rand1",  nbSeg = 10, seed = 86)
 
 dataRWAR <- function(N = 1e3,
                      sdEta = 1, sdNu = 1, phi = 0.5,
