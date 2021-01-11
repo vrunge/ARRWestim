@@ -1,17 +1,19 @@
 ### chose parameters
-n <- 10000
-sdEta2 <- 0.04
-sdNu2 <- 0.02
+n <- 5000
+sdEta <- 1
+sdNu <- 1
 phi <- 0.4
 
 ### GENERATE DATA
-y <- dataRWAR(N = n, sdEta2 = sdEta2, sdNu2 = sdNu2, phi = phi, type = "rand1",  nbSeg = 20, seed = sample(1e5,1))
+y <- dataRWAR(N = n, sdEta = sdEta, sdNu = sdNu, phi = phi,
+              type = "rand1",  nbSeg = 50, jumpSize = 5,
+              seed = sample(1e5,1))
 
 ###  plot the time-series
-plotARRW(y)
+plotRWAR(y)
 
 ###  plot the diff-1 time-series and show changepoints
-plotARRWdiff(y)
+plotRWARdiff(y)
 
 ## ESTIM VARIANCES
 nb <- 10
@@ -22,5 +24,5 @@ v
 bestParameters(y$y, nbK = nb)
 
 ###  compare data for the least-square criterion
-plotVarVarEstim(v, sdEta2, sdNu2, phi, nbK = nb)
+plotVarVarEstim(v, sdEta, sdNu, phi, nbK = nb)
 
