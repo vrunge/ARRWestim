@@ -4,20 +4,6 @@ library(parallel)
 cores <- detectCores()
 cores <- 45
 
-#########################################################################
-#nbSimu <- 10
-#lres_1 <- mclapply(1:nbSimu, FUN = one.simu,
-#                   n = 10^5,
-#                   sdEta2 = 1,
-#                   sdNu2 = 1,
-#                   phi = 0.5,
-#                   poisParam = 0,
-#                   meanGap = 2,
-#                   nbK = 10,
-#                   mc.cores = cores)
-#df <- do.call(rbind, lres_1)
-#save(df, file="df.RData")
-##########################################################################
 
 nbSimu <- 50
 nbPhi <- 20
