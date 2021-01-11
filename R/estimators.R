@@ -4,7 +4,7 @@
 #' @param nbK number of diff k elements to consider
 #' @return the vector varEst of estimated variances
 #' @examples
-#' estimVar(dataRWAR(1000, sdEta2 = 0.1, sdNu2 = 0.1, phi = 0.3, type = "rand1",  nbSeg = 10)$y)
+#' estimVar(dataRWAR(1000, sdEta = 0.1, sdNu = 0.1, phi = 0.3, type = "rand1",  nbSeg = 10)$y)
 estimVar <- function(y, nbK = 10)
 {
   n <- length(y)
@@ -21,13 +21,13 @@ estimVar <- function(y, nbK = 10)
 #' L2 error estimation
 #' @description the least-square value
 #' @param v the estimated variances of the diff k operator
-#' @param sdEta2 the Random Walk variance
-#' @param sdNu2 the AR(1) variance
+#' @param sdEta standard deviation in Random Walk
+#' @param sdNu  standard deviation in AR(1)
 #' @param phi the autocorrelative AR(1) parameter
 #' @return the value of the sum of squares
-cost <- function(v, sdEta2, sdNu2, phi)
+cost <- function(v, sdEta, sdNu, phi)
 {
-  return(sum(sapply(1:length(v), function(k){(k*sdEta2 + 2*((1-phi^k)/(1-phi^2))*sdNu2 - v[k])^2})))
+  return(sum(sapply(1:length(v), function(k){(k*sdEta^2 + 2*((1-phi^k)/(1-phi^2))*sdNu^2 - v[k])^2})))
 }
 
 
@@ -62,7 +62,7 @@ evalEtaNu <- function(v, phi)
       myNu2 = 0
     }
   }
-  return(list(Eta2 = myEta2, Nu2 = myNu2))
+  return(list(Eta = sqrt(myEta2), Nu = sqrt(myNu2)))
 }
 
 
@@ -71,7 +71,8 @@ evalEtaNu <- function(v, phi)
 #' @param y A time-series obtained by the dataRWAR function
 #' @param nbK number of diff k elements to consider
 #' @return a list with an estimation of the best parameters for Eta2, Nu2 and phi
-#' bestParameters(dataRWAR(10000, sdEta2 = 0.2, sdNu2 = 0.1, phi = 0.3, type = "rand1",  nbSeg = 10,seed = sample(10000,1))$y)
+#' @examples
+#' bestParameters(dataRWAR(10000, sdEta = 0.2, sdNu = 0.1, phi = 0.3, type = "rand1",  nbSeg = 10,seed = sample(10000,1))$y)
 bestParameters <- function(y, nbK = 10)
 {
   costall <- rep(0,100)
@@ -79,9 +80,9 @@ bestParameters <- function(y, nbK = 10)
   for(i in 1:100)
   {
     e <- evalEtaNu(v, (i-1)/100)  #using function evalEtaNu
-    costall[i] <- cost(v, e$Eta2, e$Nu2, (i-1)/100)  #using cost function
+    costall[i] <- cost(v, e$Eta, e$Nu, (i-1)/100)  #using cost function
   }
   argmin <- which.min(costall)
   e <- evalEtaNu(v, (argmin-1)/100)
-  return(list(Eta2Opt = e$Eta2, Nu2Opt = e$Nu2, argmin = (argmin-1)/100))
+  return(list(EtaOpt = e$Eta, NuOpt = e$Nu, argmin = (argmin-1)/100))
 }
