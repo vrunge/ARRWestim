@@ -1,4 +1,3 @@
-
 rm(list=ls())
 
 # LIBRARIES
@@ -17,7 +16,7 @@ cores <- 8 ###CHANGE
 ### Simulations parameters
 ###
 #nbSimu <- 1200
-nbSimu <- 1000 ###CHANGE
+nbSimu <- 1000 ##CHANGE
 nbPhi <- 19 #step size = 0.05 in phi
 nbOmega2 <- 40
 nbK <- 10
@@ -56,7 +55,7 @@ positions <- c(logOmega2[1], logOmega2[nb0.5], logOmega2[nb1], logOmega2[nb4], l
 
 colScale <- function(min, max, nb, epsilon)
 {
-  if(min*max < 0) #biais estimation case
+  if(min*max < 0)
   {
     colorTable <- designer.colors(3*nb-1, c( "blue","white", "red"))
     M <- max(abs(min), abs(max))
@@ -75,14 +74,21 @@ colScale <- function(min, max, nb, epsilon)
       colorTable <- colorTable[1:(3*nb-1-rk)]
       brks <- brks[1:(3*nb-rk)]
     }
-
   }
-  if(min == 0) #variance case
+  if(min*max >= 0)
   {
-    colorTable <- designer.colors(nb-1, c("white", "black"))
-    brks<- seq(0, max, length.out = nb)
-  }
+    if(min < 0)
+    {
+      colorTable <- designer.colors(nb, c( "blue","white"))
+      brks<- seq(min, 0, length.out = nb)
+    }
+    else
+    {
+      colorTable <- designer.colors(nb, c( "white","red"))
+      brks<- seq(0, max, length.out = nb)
+    }
 
+  }
   return(list(col = colorTable, breaks = brks))
 }
 
@@ -100,19 +106,21 @@ grayScale <- function(max, nb)
 res1 <- NULL
 for(i in phi)
 {
+  print(i)
   for(j in omega2)
   {
+    print(j)
     res1 <- c(res1, mclapply(1:nbSimu, FUN = one.simu,
                            N = 5000,
                            sdEta = sqrt(j),
                            sdNu = 1,
                            phi = i,
+                           type = "none",
                            nbSeg = 1,
                            jumpSize = 0,
                            nbK = nbK,
                            mc.cores = 8)) ## mc.cores = 8
   }
-  print(i)
 }
 
 
@@ -122,8 +130,10 @@ for(i in phi)
 res2 <- NULL
 for(i in phi)
 {
+  print(i)
   for(j in omega2)
   {
+    print(j)
     res2 <- c(res2, mclapply(1:nbSimu, FUN = one.simu,
                            N = 5000,
                            sdEta = sqrt(j),
@@ -135,15 +145,16 @@ for(i in phi)
                            nbK = nbK,
                            mc.cores = 8)) ## mc.cores = 8
   }
-  print(i)
 }
 
 
 res3 <- NULL
 for(i in phi)
 {
+  print(i)
   for(j in omega2)
   {
+    print(j)
     res3 <- c(res3, mclapply(1:nbSimu, FUN = one.simu,
                              N = 5000,
                              sdEta = sqrt(j),
@@ -155,7 +166,6 @@ for(i in phi)
                              nbK = nbK,
                              mc.cores = 8)) ## mc.cores = 8
   }
-  print(i)
 }
 ###
 ### Save result
@@ -164,12 +174,15 @@ for(i in phi)
 
 df <- do.call(rbind, res1)
 save(df, file="df_sdEtasdNuPhi_noCHANGE.RData")
+save(df, file="/home/vrunge/Dropbox/df_sdEtasdNuPhi_noCHANGE.RData")
 
 dfr1 <- do.call(rbind, res2)
 save(dfr1, file="df_sdEtasdNuPhi_rand1_50CHANGES.RData")
+save(df, file="/home/vrunge/Dropbox/df_sdEtasdNuPhi_rand1_50CHANGES.RData")
 
 dfr2 <- do.call(rbind, res3)
 save(dfr2, file="df_sdEtasdNuPhi_rand1_100CHANGES.RData")
+save(df, file="/home/vrunge/Dropbox/df_sdEtasdNuPhi_rand1_100CHANGES.RData")
 
 
 dfmean_1 <- stats::aggregate(df, list(rep(1:(nrow(df)%/%nbSimu+1), each = nbSimu, len = nrow(df))), base::mean)[-1]
@@ -225,7 +238,7 @@ plotSimu <- function(z1, w1, z2, w2, z3, w3,
 
   #####sd_Eta
   u1 <- colScale(min = min(z1), max = max(z1), epsilon = abs(max(z1))/2, nb = 16)
-  image.plot(.phi, .logOmega2, z1, breaks=u1$breaks, col=u1$col, axis.args=list(cex.axis=1.2),
+  image.plot(.phi, .logOmega2, z1, breaks=u1$breaks, col=u1$col, axis.args=list(cex.axis=1.5),
              main = expression(E((hat(sigma)[eta]-sigma[eta] )/ sigma[eta])),
              xlab = expression( phi ),
              ylab = expression( omega^2 ),   mgp=c(2,2,0),
@@ -235,7 +248,7 @@ plotSimu <- function(z1, w1, z2, w2, z3, w3,
   axis(2, labels = .myscale, at = .positions)
 
   v1 <- grayScale(max = max(w1),  nb = 20)
-  image.plot(.phi, .logOmega2,w1,breaks=v1$breaks, col=v1$col,axis.args=list(cex.axis=1.2),
+  image.plot(.phi, .logOmega2,w1,breaks=v1$breaks, col=v1$col,axis.args=list(cex.axis=1.5),
              main = expression(SD((hat(sigma)[eta]-sigma[eta] )/ sigma[eta])),
              xlab = expression( phi ),
              ylab = expression( omega^2 ),   mgp=c(2,2,0),
@@ -246,7 +259,7 @@ plotSimu <- function(z1, w1, z2, w2, z3, w3,
 
   #####sd_Nu
   u2 <- colScale(min = min(z2), max = max(z2), epsilon = 0.1, nb = 16)
-  image.plot(.phi, .logOmega2,z2,breaks=u2$breaks, col=u2$col ,axis.args=list(cex.axis=1.2),
+  image.plot(.phi, .logOmega2,z2,breaks=u2$breaks, col=u2$col ,axis.args=list(cex.axis=1.5),
              main = expression(E((hat(sigma)[nu]-sigma[nu] )/ sigma[nu])),
              xlab = expression( phi ),
              ylab = expression( omega^2 ),   mgp=c(2,2,0),
@@ -256,7 +269,7 @@ plotSimu <- function(z1, w1, z2, w2, z3, w3,
   axis(2, labels = .myscale, at = .positions)
 
   v2 <- grayScale(max = max(w2),  nb = 20)
-  image.plot(.phi, .logOmega2,w2,breaks=v2$breaks, col=v2$col,axis.args=list(cex.axis=1.2),
+  image.plot(.phi, .logOmega2,w2,breaks=v2$breaks, col=v2$col,axis.args=list(cex.axis=1.5),
              main = expression(SD((hat(sigma)[nu]-sigma[nu] )/ sigma[nu])),
              xlab = expression( phi ),
              ylab = expression( omega^2 ),   mgp=c(2,2,0),
@@ -267,7 +280,7 @@ plotSimu <- function(z1, w1, z2, w2, z3, w3,
 
   #####phi
   u3 <- colScale(min = min(z3), max = max(z3), epsilon = abs(max(z3)/4), nb = 16)
-  image.plot(.phi, .logOmega2,z3, breaks=u3$breaks, col=u3$col, axis.args=list(cex.axis=1.2),
+  image.plot(.phi, .logOmega2,z3, breaks=u3$breaks, col=u3$col, axis.args=list(cex.axis=1.5),
              main = expression(E (hat(phi) - phi) ),
              xlab = expression( phi ),
              ylab = expression( omega^2 ), mgp=c(2,2,0),
@@ -277,7 +290,7 @@ plotSimu <- function(z1, w1, z2, w2, z3, w3,
   axis(2, labels = .myscale, at = .positions)
 
   v3 <- grayScale(max = max(w3),  nb = 20)
-  image.plot(.phi, .logOmega2,w3,breaks=v3$breaks, col=v3$col,axis.args=list(cex.axis=1),
+  image.plot(.phi, .logOmega2,w3,breaks=v3$breaks, col=v3$col,axis.args=list(cex.axis=1.5),
              main = expression(SD (hat(phi) - phi)),
              xlab = expression( phi ),
              ylab = expression( omega^2 ),  mgp=c(2,2,0),
