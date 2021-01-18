@@ -16,7 +16,7 @@ cores <- 8 ###CHANGE
 ### Simulations parameters
 ###
 #nbSimu <- 1200
-nbSimu <- 1000 ##CHANGE
+nbSimu <- 200 ##CHANGE
 nbPhi <- 19 #step size = 0.05 in phi
 nbOmega2 <- 40
 nbK <- 10
@@ -103,6 +103,7 @@ grayScale <- function(max, nb)
 
 ########### ########### ########### ###########
 
+
 res1 <- NULL
 for(i in phi)
 {
@@ -111,21 +112,17 @@ for(i in phi)
   {
     print(j)
     res1 <- c(res1, mclapply(1:nbSimu, FUN = one.simu,
-                           N = 5000,
-                           sdEta = sqrt(j),
-                           sdNu = 1,
-                           phi = i,
-                           type = "none",
-                           nbSeg = 1,
-                           jumpSize = 0,
-                           nbK = nbK,
-                           varType = "S",
-                           mc.cores = 8)) ## mc.cores = 8
+                             N = 5000,
+                             sdEta = sqrt(j),
+                             sdNu = 1,
+                             phi = i,
+                             type = "rand1",
+                             nbSeg = 5,
+                             jumpSize = 10,
+                             nbK = nbK,
+                             mc.cores = 8)) ## mc.cores = 8
   }
 }
-
-
-
 
 
 res2 <- NULL
@@ -136,15 +133,15 @@ for(i in phi)
   {
     print(j)
     res2 <- c(res2, mclapply(1:nbSimu, FUN = one.simu,
-                           N = 5000,
-                           sdEta = sqrt(j),
-                           sdNu = 1,
-                           phi = i,
-                           type = "rand1",
-                           nbSeg = 50,
-                           jumpSize = 10,
-                           nbK = nbK,
-                           mc.cores = 8)) ## mc.cores = 8
+                             N = 5000,
+                             sdEta = sqrt(j),
+                             sdNu = 1,
+                             phi = i,
+                             type = "rand1",
+                             nbSeg = 10,
+                             jumpSize = 10,
+                             nbK = nbK,
+                             mc.cores = 8)) ## mc.cores = 8
   }
 }
 
@@ -162,36 +159,12 @@ for(i in phi)
                              sdNu = 1,
                              phi = i,
                              type = "rand1",
-                             nbSeg = 100,
+                             nbSeg = 20,
                              jumpSize = 10,
-                             nbK = nbK,
+                             nbK = 5,
                              mc.cores = 8)) ## mc.cores = 8
   }
 }
-
-
-
-res1 <- NULL
-for(i in phi)
-{
-  print(i)
-  for(j in omega2)
-  {
-    print(j)
-    res1 <- c(res1, mclapply(1:nbSimu, FUN = one.simu,
-                             N = 5000,
-                             sdEta = sqrt(j),
-                             sdNu = 1,
-                             phi = i,
-                             type = "none",
-                             nbSeg = 1,
-                             jumpSize = 0,
-                             nbK = nbK,
-                             varType = "S",
-                             mc.cores = 8)) ## mc.cores = 8
-  }
-}
-
 ###
 ### Save result
 ###
@@ -199,15 +172,15 @@ for(i in phi)
 
 df <- do.call(rbind, res1)
 save(df, file="df_sdEtasdNuPhi_noCHANGE.RData")
-save(df, file="/home/vrunge/Dropbox/df_sdEtasdNuPhi_noCHANGE_S.RData")
+save(df, file="/home/vrunge/Dropbox/df_sdEtasdNuPhi_5CHANGES.RData")
 
 dfr1 <- do.call(rbind, res2)
 save(dfr1, file="df_sdEtasdNuPhi_rand1_50CHANGES.RData")
-save(dfr1, file="/home/vrunge/Dropbox/df_sdEtasdNuPhi_rand1_50CHANGES.RData")
+save(dfr1, file="/home/vrunge/Dropbox/df_sdEtasdNuPhi_rand1_10CHANGES.RData")
 
 dfr2 <- do.call(rbind, res3)
 save(dfr2, file="df_sdEtasdNuPhi_rand1_100CHANGES.RData")
-save(dfr2, file="/home/vrunge/Dropbox/df_sdEtasdNuPhi_rand1_100CHANGES.RData")
+save(dfr2, file="/home/vrunge/Dropbox/df_sdEtasdNuPhi_rand1_20CHANGESk5.RData")
 
 
 dfmean_1 <- stats::aggregate(df, list(rep(1:(nrow(df)%/%nbSimu+1), each = nbSimu, len = nrow(df))), base::mean)[-1]

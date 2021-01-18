@@ -17,12 +17,13 @@ plotRWARdiff(y)
 
 ## ESTIM VARIANCES
 nb <- 10
-v <- estimVar(y$y, nbK = nb)
-v
+v1 <- estimVar(y$y, nbK = nb)
+v2 <- estimVar(y$y, nbK = nb, type = "S")
 
 #### find all parameters (the AR and RW variances and phi AR(1) autocorrelation parameter)
-bestParameters(y$y, nbK = nb)
+bestParameters(y$y, nbK = nb, type = "MAD")
+bestParameters(y$y, nbK = nb, type = "S")
 
 ###  compare data for the least-square criterion
-plotVarVarEstim(v, sdEta, sdNu, phi, nbK = nb)
-
+plotVarVarEstim(v1, sdEta, sdNu, phi, nbK = nb)
+plotVarVarEstim(v2, sdEta, sdNu, phi, nbK = nb)

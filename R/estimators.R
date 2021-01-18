@@ -2,17 +2,20 @@
 #' @description Estimation of the variances for the diff k operator k = 1 to nbK
 #' @param y A time-series obtained by the dataRWAR function
 #' @param nbK number of diff k elements to consider
+#' @param type type of robust variance estimator (MAD, S or Q)
 #' @return the vector varEst of estimated variances
 #' @examples
 #' estimVar(dataRWAR(1000, sdEta = 0.1, sdNu = 0.1, phi = 0.3, type = "rand1",  nbSeg = 10)$y)
-estimVar <- function(y, nbK = 10)
+estimVar <- function(y, nbK = 10, type = "MAD")
 {
   n <- length(y)
   varEst <- rep(0, nbK)
   for(k in 1:nbK)
   {
     z <- y[(k+1):n] - y[1:(n-k)]
-    varEst[k] <- mad(z)^2 #k*sdEta2 + 2*((1-phi^k)/(1-phi^2))*sdNu2
+    if(type == "MAD"){varEst[k] <- mad(z)^2} #k*sdEta2 + 2*((1-phi^k)/(1-phi^2))*sdNu2
+    if(type == "S"){varEst[k] <- robustbase::Sn(z)^2}
+    if(type == "Q"){varEst[k] <- robustbase::Qn(z)^2}
   }
   return(varEst)
 }
@@ -70,13 +73,14 @@ evalEtaNu <- function(v, phi)
 #' @description iteration of the least square criterion for a grid of the phi parameter
 #' @param y A time-series obtained by the dataRWAR function
 #' @param nbK number of diff k elements to consider
+#' @param type type of robust variance estimator (MAD, S or Q)
 #' @return a list with an estimation of the best parameters for Eta2, Nu2 and phi
 #' @examples
 #' bestParameters(dataRWAR(10000, sdEta = 0.2, sdNu = 0.1, phi = 0.3, type = "rand1",  nbSeg = 10,seed = sample(10000,1))$y)
-bestParameters <- function(y, nbK = 10)
+bestParameters <- function(y, nbK = 10, type = "MAD")
 {
   costall <- rep(0,100)
-  v <- estimVar(y, nbK = nbK) #using function estimVar
+  v <- estimVar(y, nbK = nbK, type = type) #using function estimVar
   for(i in 1:100)
   {
     e <- evalEtaNu(v, (i-1)/100)  #using function evalEtaNu
