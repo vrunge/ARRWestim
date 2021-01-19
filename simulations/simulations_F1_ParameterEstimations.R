@@ -141,9 +141,10 @@ for(i in phi)
                            sdNu = 1,
                            phi = i,
                            type = "rand1",
-                           nbSeg = 50,
+                           nbSeg = 5,
                            jumpSize = 10,
                            nbK = nbK,
+                           varType = "S",
                            mc.cores = 8)) ## mc.cores = 8
   }
 }
@@ -162,35 +163,14 @@ for(i in phi)
                              sdNu = 1,
                              phi = i,
                              type = "rand1",
-                             nbSeg = 100,
+                             nbSeg = 25,
                              jumpSize = 10,
-                             nbK = nbK,
-                             mc.cores = 8)) ## mc.cores = 8
-  }
-}
-
-
-
-res1 <- NULL
-for(i in phi)
-{
-  print(i)
-  for(j in omega2)
-  {
-    print(j)
-    res1 <- c(res1, mclapply(1:nbSimu, FUN = one.simu,
-                             N = 5000,
-                             sdEta = sqrt(j),
-                             sdNu = 1,
-                             phi = i,
-                             type = "none",
-                             nbSeg = 1,
-                             jumpSize = 0,
                              nbK = nbK,
                              varType = "S",
                              mc.cores = 8)) ## mc.cores = 8
   }
 }
+
 
 ###
 ### Save result
