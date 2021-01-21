@@ -81,6 +81,9 @@ dataRWAR <- function(N = 1e3,
   e <- rnorm(1, 0, sdNu/sqrt(1 - phi^2))
   for(i in 1:N)
   {
+    length(y)
+    length(y[i])
+    length(e)
     y[i] <- y[i] + e
     e <- phi*e + rnorm(n = 1, mean = 0, sd = sdNu)
   }
