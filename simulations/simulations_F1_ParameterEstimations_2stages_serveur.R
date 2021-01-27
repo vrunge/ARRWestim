@@ -5,7 +5,7 @@ rm(list=ls())
 library(DeCAFS)
 library(ARRWestim)
 
-one.simu.2stages <- function(i, N = 5*10^3, sdEta = 0.4, sdNu = 0.3, phi = 0.2,
+one.simu.2stages <- function(i, N = 5*10^3, sdEta = 0.1, sdNu = 0.3, phi = 0.2,
                      type = "rand1", nbSeg = 10, jumpSize = 2, nbK = 10, varType = "MAD")
 {
   y <- ARRWestim::dataRWAR(N = N,
@@ -28,10 +28,10 @@ one.simu.2stages <- function(i, N = 5*10^3, sdEta = 0.4, sdNu = 0.3, phi = 0.2,
     else{newRes[i,] <- c(0,0,0, w[i])}
   }
 
-  if(all(newRes[,4] <= 50)){finalRes <- res}
+  if(all(newRes[,4] <= 50) || (dim(newRes)[1] == 1)){finalRes <- unname(unlist(res))}
   else{
-    newRes <- newRes[newRes[,4] > 50, ]
-    finalRes <- apply(newRes, weighted.mean, newRes[,4], MARGIN = 2)
+      newRes <- newRes[newRes[,4] > 50, ]
+      finalRes <- apply(newRes, weighted.mean, newRes[,4], MARGIN = 2)
     }
 
   #ind, n, phi, sdEta2, sdNu2, nbK, poiP, meanGap, method, mse, beta, K
@@ -52,14 +52,14 @@ library(fields)
 ### NB cores for parallel computing
 ###
 cores <- detectCores()
-cores <- 90
+cores <- 60
 #cores <- 8 ###CHANGE
 
 ###
 ### Simulations parameters
 ###
 #nbSimu <- 1200
-nbSimu <- 100 ##CHANGE
+nbSimu <- 1000 ##CHANGE
 nbPhi <- 19 #step size = 0.05 in phi
 nbOmega2 <- 40
 nbK <- 10
@@ -122,12 +122,12 @@ colScale <- function(min, max, nb, epsilon)
   {
     if(min < 0)
     {
-      colorTable <- designer.colors(nb, c( "blue","white"))
+      colorTable <- designer.colors(nb-1, c( "blue","white"))
       brks<- seq(min, 0, length.out = nb)
     }
     else
     {
-      colorTable <- designer.colors(nb, c( "white","red"))
+      colorTable <- designer.colors(nb-1, c( "white","red"))
       brks<- seq(0, max, length.out = nb)
     }
 
