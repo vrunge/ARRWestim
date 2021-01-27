@@ -76,7 +76,8 @@ evalEtaNu <- function(v, phi)
 #' @param type type of robust variance estimator (MAD, S or Q)
 #' @return a list with an estimation of the best parameters for Eta2, Nu2 and phi
 #' @examples
-#' bestParameters(dataRWAR(10000, sdEta = 0.2, sdNu = 0.1, phi = 0.3, type = "rand1",  nbSeg = 10,seed = sample(10000,1))$y)
+#' bestParameters(dataRWAR(10000, sdEta = 0.2, sdNu = 0.1, phi = 0.3,
+#' type = "rand1", nbSeg = 10, seed = sample(10000,1))$y)
 bestParameters <- function(y, nbK = 10, type = "MAD")
 {
   costall <- rep(0,100)

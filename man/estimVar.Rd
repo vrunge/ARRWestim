@@ -4,12 +4,14 @@
 \alias{estimVar}
 \title{Variance estimation for diff k operators}
 \usage{
-estimVar(y, nbK = 10)
+estimVar(y, nbK = 10, type = "MAD")
 }
 \arguments{
 \item{y}{A time-series obtained by the dataRWAR function}
 
 \item{nbK}{number of diff k elements to consider}
+
+\item{type}{type of robust variance estimator (MAD, S or Q)}
 }
 \value{
 the vector varEst of estimated variances
@@ -18,5 +20,5 @@ the vector varEst of estimated variances
 Estimation of the variances for the diff k operator k = 1 to nbK
 }
 \examples{
-estimVar(dataRWAR(1000, sdEta2 = 0.1, sdNu2 = 0.1, phi = 0.3, type = "rand1",  nbSeg = 10)$y)
+estimVar(dataRWAR(1000, sdEta = 0.1, sdNu = 0.1, phi = 0.3, type = "rand1",  nbSeg = 10)$y)
 }

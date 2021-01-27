@@ -8,7 +8,7 @@ library(ARRWestim)
 
 
 N <- 5e3
-sdEta <- 0.1
+sdEta <- 0.3
 sdNu <- 0.3
 phi <- 0.3
 type <- "rand1"

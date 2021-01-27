@@ -1,3 +1,11 @@
+#' Signal scenario
+#'
+#' @description Generate a signal scenario
+#' @param N number of data points
+#' @param type possible scenarios for the jump structure
+#' @param nbSeg number of segments
+#' @param jumpSize max size of the jumps
+#' @param seed random number generator seed (default is 42)
 scenarioGenerator <- function(N, type = c("none", "up", "updown", "rand1"), nbSeg = 20, jumpSize = 1, seed = 42)
 {
   #segment length

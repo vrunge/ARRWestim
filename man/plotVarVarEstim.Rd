@@ -4,14 +4,14 @@
 \alias{plotVarVarEstim}
 \title{plotVarVarEstim}
 \usage{
-plotVarVarEstim(v, sdEta2, sdNu2, phi, nbK = 10)
+plotVarVarEstim(v, sdEta, sdNu, phi, nbK = 10)
 }
 \arguments{
 \item{v}{the estimated variances of the diff k operator}
 
-\item{sdEta2}{the Random Walk variance}
+\item{sdEta}{standard deviation in Random Walk}
 
-\item{sdNu2}{the AR(1) variance}
+\item{sdNu}{standard deviation in AR(1)}
 
 \item{phi}{the autocorrelative AR(1) parameter}
 

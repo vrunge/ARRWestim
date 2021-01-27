@@ -4,14 +4,14 @@
 \alias{cost}
 \title{L2 error estimation}
 \usage{
-cost(v, sdEta2, sdNu2, phi)
+cost(v, sdEta, sdNu, phi)
 }
 \arguments{
 \item{v}{the estimated variances of the diff k operator}
 
-\item{sdEta2}{the Random Walk variance}
+\item{sdEta}{standard deviation in Random Walk}
 
-\item{sdNu2}{the AR(1) variance}
+\item{sdNu}{standard deviation in AR(1)}
 
 \item{phi}{the autocorrelative AR(1) parameter}
 }

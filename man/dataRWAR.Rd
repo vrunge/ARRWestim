@@ -6,8 +6,8 @@
 \usage{
 dataRWAR(
   N = 1000,
-  sdEta2 = 1,
-  sdNu2 = 1,
+  sdEta = 1,
+  sdNu = 1,
   phi = 0.5,
   type = c("none", "up", "updown", "rand1"),
   nbSeg = 20,
@@ -18,9 +18,9 @@ dataRWAR(
 \arguments{
 \item{N}{number of data points}
 
-\item{sdEta2}{variance in Random Walk}
+\item{sdEta}{standard deviation in Random Walk}
 
-\item{sdNu2}{variance in AR(1)}
+\item{sdNu}{standard deviation in AR(1)}
 
 \item{phi}{AR(1) autocorrelation parameter}
 
@@ -49,5 +49,5 @@ and
 \deqn{\epsilon_t = \phi \epsilon_{t-1} + \nu_t \quad \nu_t \sim N(0, \sigma_\nu^2)}
 }
 \examples{
-myData <- dataRWAR(1000, sdEta2 = 0.01, sdNu2 = 0.01, type = "rand1",  nbSeg = 10)
+myData <- dataRWAR(1000, sdEta = 0.1, sdNu = 0.1, type = "rand1",  nbSeg = 10, seed = 86)
 }
