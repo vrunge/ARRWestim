@@ -6,34 +6,39 @@ library(DeCAFS)
 library(ARRWestim)
 
 one.simu.2stages <- function(i, N = 5*10^3, sdEta = 0.1, sdNu = 0.3, phi = 0.2,
-                     type = "rand1", nbSeg = 10, jumpSize = 2, nbK = 10, varType = "MAD")
+                     type = "rand1", nbSeg = 10,
+                     jumpSize = 2, nbK = 10, varType = "MAD")
 {
   y <- ARRWestim::dataRWAR(N = N,
                 sdEta = sdEta, sdNu = sdNu, phi = phi,
                 type = type,
                 nbSeg = nbSeg, jumpSize = jumpSize,
                 seed = sample(1e6,1))
+  #1st estimate
   res <- bestParameters(y$y, nbK = nbK, type = varType)
+  #DECAFS
   deca <- DeCAFS::DeCAFS(y$y, 2*log(N),
       list(sdEta = res$EtaOpt, sdNu = res$NuOpt, phi = res$argmin))
-  deca$changepoints <- c(0, deca$changepoints, N)
-  K <- length(deca$changepoints) - 1
-  w <- diff(deca$changepoint)
 
-  newRes <- matrix(0, nrow = K, ncol = 4)
-  for(i in 1:K)
+
+  chpts <- c(0, deca$changepoints, N)
+  K <- length(chpts) - 1
+  w <- diff(chpts)
+
+  newRes <- matrix(0, nrow = 0, ncol = 5) #start + end + 3 parameters estimated
+  for(i in 2:length(chpts))
   {
-    seg <- y$y[(deca$changepoints[i]+1):deca$changepoints[i+1]]
-    if(w[i] > 50){newRes[i,] <- c(unname(unlist(bestParameters(seg, nbK = nbK, type = varType))), w[i])}
-    else{newRes[i,] <- c(0,0,0, w[i])}
+    if(w[i-1] > 50){newRes <- rbind(newRes, c(chpts[(i-1):i],0,0,0))}
   }
-
-  if(all(newRes[,4] <= 50) || (dim(newRes)[1] == 1)){finalRes <- unname(unlist(res))}
-  else{
-      newRes <- newRes[newRes[,4] > 50, ]
-      finalRes <- apply(newRes, weighted.mean, newRes[,4], MARGIN = 2)
+  if(nrow(newRes) > 0)
+  {
+    for(i in 1:nrow(newRes))
+    {
+      seg <- y$y[(newRes[i,1]+1):newRes[i,2]]
+      newRes[i,3:5] <- unname(unlist(bestParameters(seg, nbK = nbK, type = varType)))
     }
-
+  }
+  finalRes <- apply(newRes, weighted.mean, newRes[,2] - newRes[,1], MARGIN = 2)
   #ind, n, phi, sdEta2, sdNu2, nbK, poiP, meanGap, method, mse, beta, K
   df <- data.frame(numeric(0), numeric(0), numeric(0), numeric(0), numeric(0),
                    numeric(0), numeric(0), numeric(0), numeric(0), numeric(0),
@@ -41,10 +46,78 @@ one.simu.2stages <- function(i, N = 5*10^3, sdEta = 0.1, sdNu = 0.3, phi = 0.2,
   colnames(df) <- c("index", "n", "sdEta", "sdNu", "phi", "nbK",
                     "nbSeg", "jumpSize", "sdEtaEst%", "sdNuEst%", "phiEst_error")
   df[1,] <- c(i,N, sdEta, sdNu, phi, nbK, nbSeg, jumpSize,
-              (finalRes[1] - sdEta)/sdEta, (finalRes[2]-sdNu)/sdNu, finalRes[3] - phi)
+              (finalRes[3] - sdEta)/sdEta, (finalRes[4]-sdNu)/sdNu, finalRes[5] - phi)
   return(df)
 }
 
+###################
+
+
+one.simu.2stages2 <- function(i, N = 5*10^3, sdEta = 0.1, sdNu = 0.3, phi = 0.2,
+                             type = "rand1", nbSeg = 10,
+                             jumpSize = 2, nbK = 10, varType = "MAD")
+{
+  y <- ARRWestim::dataRWAR(N = N,
+                           sdEta = sdEta, sdNu = sdNu, phi = phi,
+                           type = type,
+                           nbSeg = nbSeg, jumpSize = jumpSize,
+                           seed = sample(1e6,1))
+  #1st estimate
+  res <- bestParameters(y$y, nbK = nbK, type = varType)
+  #DECAFS
+  deca <- DeCAFS::DeCAFS(y$y, 2*log(N),
+                         list(sdEta = res$EtaOpt, sdNu = res$NuOpt, phi = res$argmin))
+
+  signalConst <- rep(c(0,deca$signal[deca$changepoints+1] - deca$signal[deca$changepoints]), diff(c(0, deca$changepoints, N)))
+  y$y <- y$y - signalConst
+  res
+  res <- bestParameters(y$y, nbK = nbK, type = varType)
+  res
+  #ind, n, phi, sdEta2, sdNu2, nbK, poiP, meanGap, method, mse, beta, K
+  df <- data.frame(numeric(0), numeric(0), numeric(0), numeric(0), numeric(0),
+                   numeric(0), numeric(0), numeric(0), numeric(0), numeric(0),
+                   numeric(0) ,stringsAsFactors = FALSE)
+  colnames(df) <- c("index", "n", "sdEta", "sdNu", "phi", "nbK",
+                    "nbSeg", "jumpSize", "sdEtaEst%", "sdNuEst%", "phiEst_error")
+  df[1,] <- c(i,N, sdEta, sdNu, phi, nbK, nbSeg, jumpSize,
+              (res[1] - sdEta)/sdEta, (res[2]-sdNu)/sdNu, res[3] - phi)
+  return(df)
+}
+
+################
+
+
+one.simu.2stages3 <- function(i, N = 5*10^3, sdEta = 0.1, sdNu = 0.3, phi = 0.2,
+                              type = "rand1", nbSeg = 10,
+                              jumpSize = 2, nbK = 10, varType = "MAD")
+{
+  y <- ARRWestim::dataRWAR(N = N,
+                           sdEta = sdEta, sdNu = sdNu, phi = phi,
+                           type = type,
+                           nbSeg = nbSeg, jumpSize = jumpSize,
+                           seed = sample(1e6,1))
+  #1st estimate
+  res <- bestParameters(y$y, nbK = nbK, type = varType)
+  #DECAFS
+  deca <- DeCAFS::DeCAFS(y$y, 2*log(N),
+                         list(sdEta = res$EtaOpt, sdNu = res$NuOpt, phi = res$argmin))
+  y$y <- y$y - deca$signal
+  res
+  res <- bestParameters(y$y, nbK = nbK, type = varType, sdEta = FALSE)
+  if(length(deca$changepoints)>0){res[1] <- (mad(diff(deca$signal)[-deca$changepoints]))}else{res[1] <- (mad(diff(deca$signal)))}
+  res
+  #ind, n, phi, sdEta2, sdNu2, nbK, poiP, meanGap, method, mse, beta, K
+  df <- data.frame(numeric(0), numeric(0), numeric(0), numeric(0), numeric(0),
+                   numeric(0), numeric(0), numeric(0), numeric(0), numeric(0),
+                   numeric(0) ,stringsAsFactors = FALSE)
+  colnames(df) <- c("index", "n", "sdEta", "sdNu", "phi", "nbK",
+                    "nbSeg", "jumpSize", "sdEtaEst%", "sdNuEst%", "phiEst_error")
+  df[1,] <- c(i,N, sdEta, sdNu, phi, nbK, nbSeg, jumpSize,
+              (res[1] - sdEta)/sdEta, (res[2]-sdNu)/sdNu, res[3] - phi)
+  return(df)
+}
+
+################
 library(parallel)
 library(fields)
 
@@ -167,12 +240,33 @@ for(i in phi)
   }
 }
 
+res2 <- NULL
+for(i in phi)
+{
+  print(i)
+  for(j in omega2)
+  {
+    print(j)
+    res2 <- c(res2, mclapply(1:nbSimu, FUN = one.simu.2stages2,
+                             N = 5000,
+                             sdEta = sqrt(j),
+                             sdNu = 1,
+                             phi = i,
+                             type = "rand1",
+                             nbSeg = 25,
+                             jumpSize = 10,
+                             nbK = nbK,
+                             varType = "MAD",
+                             mc.cores = cores)) ## mc.cores = 8
+  }
+}
 
 df_2stage <- do.call(rbind, res1)
+df_2stage2 <- do.call(rbind, res2)
 save(df_2stage, file="df_2stage.RData")
+save(df_2stage2, file="df_2stage.RData")
 
-
-nbSimu <- 100
+nbSimu <- 2
 dfmean_1 <- stats::aggregate(df_2stage, list(rep(1:(nrow(df_2stage)%/%nbSimu+1), each = nbSimu, len = nrow(df_2stage))), base::mean)[-1]
 z1_1 <- matrix(dfmean_1$`sdEtaEst%`, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
 z2_1 <- matrix(dfmean_1$`sdNuEst%`, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)

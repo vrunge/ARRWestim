@@ -39,31 +39,44 @@ cost <- function(v, sdEta, sdNu, phi)
 #' @param v the estimated variances of the diff k operator
 #' @param phi the autocorrelative AR(1) parameter
 #' @return a list with an estimation of the variances Eta2 and Nu2
-evalEtaNu <- function(v, phi)
+evalEtaNu <- function(v, phi, sdEta = TRUE)
 {
-  nbK <- length(v)
-  a1 <- sum((1:nbK)^2)
-  b1 <- 2*sum((1:nbK)*(1-phi^(1:nbK))/(1-phi^2))
-  a2 <- b1/2
-  b2 <- 2*sum(((1-phi^(1:nbK))/(1-phi^2))^2)
-  c1 <- sum((1:nbK)*v)
-  c2 <- sum(((1-phi^(1:nbK))/(1-phi^2))*v)
-  det <- a1*b2 - a2*b1
-  myEta2 <- (b2*c1 - b1*c2)/det
-  myNu2 <- (-a2*c1 + a1*c2)/det
-
-  if(myEta2 < 0 || myNu2 <0) #the KKT condition with constraints phi with myEta2 >= 0 and myNu2 >=0
+  if(sdEta == TRUE)
   {
-    if(myEta2 < 0)
+    nbK <- length(v)
+    a1 <- sum((1:nbK)^2)
+    b1 <- 2*sum((1:nbK)*(1-phi^(1:nbK))/(1-phi^2))
+    a2 <- b1/2
+    b2 <- 2*sum(((1-phi^(1:nbK))/(1-phi^2))^2)
+    c1 <- sum((1:nbK)*v)
+    c2 <- sum(((1-phi^(1:nbK))/(1-phi^2))*v)
+    det <- a1*b2 - a2*b1
+    myEta2 <- (b2*c1 - b1*c2)/det
+    myNu2 <- (-a2*c1 + a1*c2)/det
+
+    if(myEta2 < 0 || myNu2 <0) #the KKT condition with constraints phi with myEta2 >= 0 and myNu2 >=0
     {
-      myEta2 = 0
-      myNu2 = c2/b2
+      if(myEta2 < 0)
+      {
+        myEta2 = 0
+        myNu2 = c2/b2
+      }
+      if(myNu2 < 0)
+      {
+        myEta2 = c1/a1
+        myNu2 = 0
+      }
     }
-    if(myNu2 < 0)
-    {
-      myEta2 = c1/a1
-      myNu2 = 0
-    }
+  }
+  else
+  {
+    myEta2 <- 0
+    nbK <- length(v)
+    A <- 2*((1-phi^(1:nbK))/(1-phi^2))
+    b2 <- sum(A^2)
+    c2 <- sum(A*v)
+    myNu2 <- c2/b2
+    if(myNu2 < 0){myNu2 <- 0}
   }
   return(list(Eta = sqrt(myEta2), Nu = sqrt(myNu2)))
 }
@@ -78,13 +91,13 @@ evalEtaNu <- function(v, phi)
 #' @examples
 #' bestParameters(dataRWAR(10000, sdEta = 0.2, sdNu = 0.1, phi = 0.3,
 #' type = "rand1", nbSeg = 10, seed = sample(10000,1))$y)
-bestParameters <- function(y, nbK = 10, type = "MAD")
+bestParameters <- function(y, nbK = 10, type = "MAD", sdEta = TRUE)
 {
   costall <- rep(0,100)
   v <- estimVar(y, nbK = nbK, type = type) #using function estimVar
   for(i in 1:100)
   {
-    e <- evalEtaNu(v, (i-1)/100)  #using function evalEtaNu
+    e <- evalEtaNu(v, (i-1)/100, sdEta = sdEta)  #using function evalEtaNu
     costall[i] <- cost(v, e$Eta, e$Nu, (i-1)/100)  #using cost function
   }
   argmin <- which.min(costall)
