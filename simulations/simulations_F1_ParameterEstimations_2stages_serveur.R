@@ -72,7 +72,7 @@ one.simu.2stages2 <- function(i, N = 5*10^3, sdEta = 0.1, sdNu = 0.3, phi = 0.2,
   y$y <- y$y - signalConst
   res
   res <- bestParameters(y$y, nbK = nbK, type = varType)
-  res
+  res <- unname(unlist(res))
   #ind, n, phi, sdEta2, sdNu2, nbK, poiP, meanGap, method, mse, beta, K
   df <- data.frame(numeric(0), numeric(0), numeric(0), numeric(0), numeric(0),
                    numeric(0), numeric(0), numeric(0), numeric(0), numeric(0),
@@ -264,9 +264,8 @@ for(i in phi)
 df_2stage <- do.call(rbind, res1)
 df_2stage2 <- do.call(rbind, res2)
 save(df_2stage, file="df_2stage.RData")
-save(df_2stage2, file="df_2stage.RData")
+save(df_2stage2, file="df_2stage2.RData")
 
-nbSimu <- 2
 dfmean_1 <- stats::aggregate(df_2stage, list(rep(1:(nrow(df_2stage)%/%nbSimu+1), each = nbSimu, len = nrow(df_2stage))), base::mean)[-1]
 z1_1 <- matrix(dfmean_1$`sdEtaEst%`, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
 z2_1 <- matrix(dfmean_1$`sdNuEst%`, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
@@ -277,13 +276,12 @@ w1_1 <- matrix(dfsd_1$`sdEtaEst%`, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
 w2_1 <- matrix(dfsd_1$`sdNuEst%`, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
 w3_1 <- matrix(dfsd_1$phiEst, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
 
-nbSimu <- 1000
-dfmean_2 <- stats::aggregate(df3_MAD, list(rep(1:(nrow(df3_MAD)%/%nbSimu+1), each = nbSimu, len = nrow(df3_MAD))), base::mean)[-1]
+dfmean_2 <- stats::aggregate(df_2stage2, list(rep(1:(nrow(df_2stage2)%/%nbSimu+1), each = nbSimu, len = nrow(df_2stage2))), base::mean)[-1]
 z1_2 <- matrix(dfmean_2$`sdEtaEst%`, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
 z2_2 <- matrix(dfmean_2$`sdNuEst%`, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
 z3_2 <- matrix(dfmean_2$phiEst, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
 
-dfsd_2 <- stats::aggregate(df3_MAD, list(rep(1:(nrow(df3_MAD)%/%nbSimu+1), each = nbSimu, len = nrow(df3_MAD))), stats::sd)[-1]
+dfsd_2 <- stats::aggregate(df_2stage2, list(rep(1:(nrow(df_2stage2)%/%nbSimu+1), each = nbSimu, len = nrow(df_2stage2))), stats::sd)[-1]
 w1_2 <- matrix(dfsd_2$`sdEtaEst%`, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
 w2_2 <- matrix(dfsd_2$`sdNuEst%`, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
 w3_2 <- matrix(dfsd_2$phiEst, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
