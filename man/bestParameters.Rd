@@ -4,7 +4,7 @@
 \alias{bestParameters}
 \title{bestParameters}
 \usage{
-bestParameters(y, nbK = 10, type = "MAD")
+bestParameters(y, nbK = 10, type = "MAD", sdEta = TRUE)
 }
 \arguments{
 \item{y}{A time-series obtained by the dataRWAR function}
@@ -12,6 +12,8 @@ bestParameters(y, nbK = 10, type = "MAD")
 \item{nbK}{number of diff k elements to consider}
 
 \item{type}{type of robust variance estimator (MAD, S or Q)}
+
+\item{sdEta}{if sdEta = FALSE there is no random walk}
 }
 \value{
 a list with an estimation of the best parameters for Eta2, Nu2 and phi

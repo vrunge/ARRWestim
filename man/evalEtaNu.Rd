@@ -4,12 +4,14 @@
 \alias{evalEtaNu}
 \title{RW and AR(1) variance estimations with fixed AR(1) parameter}
 \usage{
-evalEtaNu(v, phi)
+evalEtaNu(v, phi, sdEta = TRUE)
 }
 \arguments{
 \item{v}{the estimated variances of the diff k operator}
 
 \item{phi}{the autocorrelative AR(1) parameter}
+
+\item{sdEta}{if sdEta = FALSE there is no random walk}
 }
 \value{
 a list with an estimation of the variances Eta2 and Nu2

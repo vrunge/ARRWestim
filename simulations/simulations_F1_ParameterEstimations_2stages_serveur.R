@@ -52,72 +52,6 @@ one.simu.2stages <- function(i, N = 5*10^3, sdEta = 0.1, sdNu = 0.3, phi = 0.2,
 
 ###################
 
-
-one.simu.2stages2 <- function(i, N = 5*10^3, sdEta = 0.1, sdNu = 0.3, phi = 0.2,
-                             type = "rand1", nbSeg = 10,
-                             jumpSize = 2, nbK = 10, varType = "MAD")
-{
-  y <- ARRWestim::dataRWAR(N = N,
-                           sdEta = sdEta, sdNu = sdNu, phi = phi,
-                           type = type,
-                           nbSeg = nbSeg, jumpSize = jumpSize,
-                           seed = sample(1e6,1))
-  #1st estimate
-  res <- bestParameters(y$y, nbK = nbK, type = varType)
-  #DECAFS
-  deca <- DeCAFS::DeCAFS(y$y, 2*log(N),
-                         list(sdEta = res$EtaOpt, sdNu = res$NuOpt, phi = res$argmin))
-
-  signalConst <- rep(c(0,deca$signal[deca$changepoints+1] - deca$signal[deca$changepoints]), diff(c(0, deca$changepoints, N)))
-  y$y <- y$y - signalConst
-  res
-  res <- bestParameters(y$y, nbK = nbK, type = varType)
-  res <- unname(unlist(res))
-  #ind, n, phi, sdEta2, sdNu2, nbK, poiP, meanGap, method, mse, beta, K
-  df <- data.frame(numeric(0), numeric(0), numeric(0), numeric(0), numeric(0),
-                   numeric(0), numeric(0), numeric(0), numeric(0), numeric(0),
-                   numeric(0) ,stringsAsFactors = FALSE)
-  colnames(df) <- c("index", "n", "sdEta", "sdNu", "phi", "nbK",
-                    "nbSeg", "jumpSize", "sdEtaEst%", "sdNuEst%", "phiEst_error")
-  df[1,] <- c(i,N, sdEta, sdNu, phi, nbK, nbSeg, jumpSize,
-              (res[1] - sdEta)/sdEta, (res[2]-sdNu)/sdNu, res[3] - phi)
-  return(df)
-}
-
-################
-
-
-one.simu.2stages3 <- function(i, N = 5*10^3, sdEta = 0.1, sdNu = 0.3, phi = 0.2,
-                              type = "rand1", nbSeg = 10,
-                              jumpSize = 2, nbK = 10, varType = "MAD")
-{
-  y <- ARRWestim::dataRWAR(N = N,
-                           sdEta = sdEta, sdNu = sdNu, phi = phi,
-                           type = type,
-                           nbSeg = nbSeg, jumpSize = jumpSize,
-                           seed = sample(1e6,1))
-  #1st estimate
-  res <- bestParameters(y$y, nbK = nbK, type = varType)
-  #DECAFS
-  deca <- DeCAFS::DeCAFS(y$y, 2*log(N),
-                         list(sdEta = res$EtaOpt, sdNu = res$NuOpt, phi = res$argmin))
-  y$y <- y$y - deca$signal
-  res
-  res <- bestParameters(y$y, nbK = nbK, type = varType, sdEta = FALSE)
-  if(length(deca$changepoints)>0){res[1] <- (mad(diff(deca$signal)[-deca$changepoints]))}else{res[1] <- (mad(diff(deca$signal)))}
-  res
-  #ind, n, phi, sdEta2, sdNu2, nbK, poiP, meanGap, method, mse, beta, K
-  df <- data.frame(numeric(0), numeric(0), numeric(0), numeric(0), numeric(0),
-                   numeric(0), numeric(0), numeric(0), numeric(0), numeric(0),
-                   numeric(0) ,stringsAsFactors = FALSE)
-  colnames(df) <- c("index", "n", "sdEta", "sdNu", "phi", "nbK",
-                    "nbSeg", "jumpSize", "sdEtaEst%", "sdNuEst%", "phiEst_error")
-  df[1,] <- c(i,N, sdEta, sdNu, phi, nbK, nbSeg, jumpSize,
-              (res[1] - sdEta)/sdEta, (res[2]-sdNu)/sdNu, res[3] - phi)
-  return(df)
-}
-
-################
 library(parallel)
 library(fields)
 
@@ -145,7 +79,7 @@ nbK <- 10
 
 phi <- seq(from = 0, to = 0.9, length.out = nbPhi)
 
-omega2 <- exp(seq(from = -log(3), to = log(8), length.out = nbOmega2))
+omega2 <- exp(seq(from = -log(3), to = log(2), length.out = nbOmega2))
 diffO2 <- diff(log(omega2))[1]
 logOmega2 <- c(log(omega2)[1]-diffO2, log(omega2))
 omega2 <- c(0, omega2)
@@ -160,9 +94,9 @@ nbOmega2 <- nbOmega2 +1
 eps <- -2*10^(-15)
 nb0.5 <- which(omega2-0.5 >= eps)[1]
 nb1 <- which(omega2-1 >= eps)[1]
-nb4 <- which(omega2-4 >= eps)[1]
-nb8 <- which(omega2-8 >= eps)[1]
-myscale <- c(0,0.5,1,4,8)
+nb4 <- which(omega2-1.5 >= eps)[1]
+nb8 <- which(omega2-2 >= eps)[1]
+myscale <- c(0,0.5,1,1.5,2)
 positions <- c(logOmega2[1], logOmega2[nb0.5], logOmega2[nb1], logOmega2[nb4], logOmega2[nb8])
 
 
@@ -239,32 +173,8 @@ for(i in phi)
                              mc.cores = cores)) ## mc.cores = 8
   }
 }
-
-res2 <- NULL
-for(i in phi)
-{
-  print(i)
-  for(j in omega2)
-  {
-    print(j)
-    res2 <- c(res2, mclapply(1:nbSimu, FUN = one.simu.2stages2,
-                             N = 5000,
-                             sdEta = sqrt(j),
-                             sdNu = 1,
-                             phi = i,
-                             type = "rand1",
-                             nbSeg = 25,
-                             jumpSize = 10,
-                             nbK = nbK,
-                             varType = "MAD",
-                             mc.cores = cores)) ## mc.cores = 8
-  }
-}
-
 df_2stage <- do.call(rbind, res1)
-df_2stage2 <- do.call(rbind, res2)
 save(df_2stage, file="df_2stage.RData")
-save(df_2stage2, file="df_2stage2.RData")
 
 dfmean_1 <- stats::aggregate(df_2stage, list(rep(1:(nrow(df_2stage)%/%nbSimu+1), each = nbSimu, len = nrow(df_2stage))), base::mean)[-1]
 z1_1 <- matrix(dfmean_1$`sdEtaEst%`, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
@@ -275,16 +185,6 @@ dfsd_1 <- stats::aggregate(df_2stage, list(rep(1:(nrow(df_2stage)%/%nbSimu+1), e
 w1_1 <- matrix(dfsd_1$`sdEtaEst%`, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
 w2_1 <- matrix(dfsd_1$`sdNuEst%`, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
 w3_1 <- matrix(dfsd_1$phiEst, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
-
-dfmean_2 <- stats::aggregate(df_2stage2, list(rep(1:(nrow(df_2stage2)%/%nbSimu+1), each = nbSimu, len = nrow(df_2stage2))), base::mean)[-1]
-z1_2 <- matrix(dfmean_2$`sdEtaEst%`, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
-z2_2 <- matrix(dfmean_2$`sdNuEst%`, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
-z3_2 <- matrix(dfmean_2$phiEst, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
-
-dfsd_2 <- stats::aggregate(df_2stage2, list(rep(1:(nrow(df_2stage2)%/%nbSimu+1), each = nbSimu, len = nrow(df_2stage2))), stats::sd)[-1]
-w1_2 <- matrix(dfsd_2$`sdEtaEst%`, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
-w2_2 <- matrix(dfsd_2$`sdNuEst%`, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
-w3_2 <- matrix(dfsd_2$phiEst, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
 
 
 ###
@@ -371,6 +271,5 @@ plotSimu <- function(z1, w1, z2, w2, z3, w3,
 
 
 plotSimu(z1_1, w1_1, z2_1, w2_1, z3_1, w3_1)
-plotSimu(z1_2, w1_2, z2_2, w2_2, z3_2, w3_2)
 
 

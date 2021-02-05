@@ -38,6 +38,7 @@ cost <- function(v, sdEta, sdNu, phi)
 #' @description Evaluation of the variances Eta2 and Nu2
 #' @param v the estimated variances of the diff k operator
 #' @param phi the autocorrelative AR(1) parameter
+#' @param sdEta if sdEta = FALSE there is no random walk
 #' @return a list with an estimation of the variances Eta2 and Nu2
 evalEtaNu <- function(v, phi, sdEta = TRUE)
 {
@@ -87,6 +88,7 @@ evalEtaNu <- function(v, phi, sdEta = TRUE)
 #' @param y A time-series obtained by the dataRWAR function
 #' @param nbK number of diff k elements to consider
 #' @param type type of robust variance estimator (MAD, S or Q)
+#' @param sdEta if sdEta = FALSE there is no random walk
 #' @return a list with an estimation of the best parameters for Eta2, Nu2 and phi
 #' @examples
 #' bestParameters(dataRWAR(10000, sdEta = 0.2, sdNu = 0.1, phi = 0.3,
