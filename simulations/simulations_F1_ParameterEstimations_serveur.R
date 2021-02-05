@@ -29,7 +29,7 @@ library(fields)
 ### NB cores for parallel computing
 ###
 cores <- detectCores()
-cores <- 40
+cores <- 60
 #cores <- 8 ###CHANGE
 
 ###
@@ -37,7 +37,7 @@ cores <- 40
 ###
 #nbSimu <- 1200
 nbSimu <- 1000 ##CHANGE
-nbPhi <- 19 #step size = 0.05 in phi
+nbPhi <- 18 #step size = 0.05 in phi
 nbOmega2 <- 40
 nbK <- 10
 
@@ -47,9 +47,9 @@ nbK <- 10
 ### sd_nu fixed to 1
 ###
 
-phi <- seq(from = 0, to = 0.9, length.out = nbPhi)
+phi <- seq(from = 0, to = 0.85, length.out = nbPhi)
 
-omega2 <- exp(seq(from = -log(3), to = log(2), length.out = nbOmega2))
+omega2 <- exp(seq(from = -log(12), to = log(2), length.out = nbOmega2))
 diffO2 <- diff(log(omega2))[1]
 logOmega2 <- c(log(omega2)[1]-diffO2, log(omega2))
 omega2 <- c(0, omega2)
@@ -69,56 +69,6 @@ nb8 <- which(omega2-2 >= eps)[1]
 myscale <- c(0,0.5,1,1.5,2)
 positions <- c(logOmega2[1], logOmega2[nb0.5], logOmega2[nb1], logOmega2[nb4], logOmega2[nb8])
 
-
-######################################################################
-# color scale function
-
-colScale <- function(min, max, nb, epsilon)
-{
-  if(min*max < 0)
-  {
-    colorTable <- designer.colors(3*nb-1, c( "blue","white", "red"))
-    M <- max(abs(min), abs(max))
-    brks<- c(seq(-M, -epsilon, length.out = nb+1)[-(nb+1)],
-             seq(-epsilon, epsilon,length.out = nb+1)[-(nb+1)],
-             seq( epsilon, M,length.out = nb))
-    if(-M < min)
-    {
-      rk <- sum(brks < min)
-      colorTable <- colorTable[rk:(3*nb-1)]
-      brks <- brks[rk:(3*nb)]
-    }
-    else
-    {
-      rk <- sum(brks > max)
-      colorTable <- colorTable[1:(3*nb-1-rk)]
-      brks <- brks[1:(3*nb-rk)]
-    }
-  }
-  if(min*max >= 0)
-  {
-    if(min < 0)
-    {
-      colorTable <- designer.colors(nb, c( "blue","white"))
-      brks<- seq(min, 0, length.out = nb)
-    }
-    else
-    {
-      colorTable <- designer.colors(nb, c( "white","red"))
-      brks<- seq(0, max, length.out = nb)
-    }
-
-  }
-  return(list(col = colorTable, breaks = brks))
-}
-
-
-grayScale <- function(max, nb)
-{
-  colorTable <- designer.colors(nb-1, c("white", "black"))
-  brks<- seq(0, max, length.out = nb)
-  return(list(col = colorTable, breaks = brks))
-}
 
 
 ########### ########### ########### ###########
@@ -161,7 +111,7 @@ for(i in phi)
                              sdNu = 1,
                              phi = i,
                              type = "rand1",
-                             nbSeg = 5,
+                             nbSeg = 10,
                              jumpSize = 10,
                              nbK = nbK,
                              varType = "MAD",
@@ -183,7 +133,7 @@ for(i in phi)
                              sdNu = 1,
                              phi = i,
                              type = "rand1",
-                             nbSeg = 25,
+                             nbSeg = 50,
                              jumpSize = 10,
                              nbK = nbK,
                              varType = "MAD",
@@ -234,6 +184,60 @@ dfsd_3 <- stats::aggregate(df3, list(rep(1:(nrow(df3)%/%nbSimu+1), each = nbSimu
 w1_3 <- matrix(dfsd_3$`sdEtaEst%`, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
 w2_3 <- matrix(dfsd_3$`sdNuEst%`, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
 w3_3 <- matrix(dfsd_3$phiEst, nrow = nbPhi, ncol = nbOmega2, byrow = TRUE)
+
+########### ########### ########### ###########
+########### ########### ########### ###########
+########### ########### ########### ###########
+######################################################################
+# color scale function
+
+colScale <- function(min, max, nb, epsilon)
+{
+  if(min*max < 0)
+  {
+    colorTable <- designer.colors(3*nb-1, c( "blue","white", "red"))
+    M <- max(abs(min), abs(max))
+    brks<- c(seq(-M, -epsilon, length.out = nb+1)[-(nb+1)],
+             seq(-epsilon, epsilon,length.out = nb+1)[-(nb+1)],
+             seq( epsilon, M,length.out = nb))
+    if(-M < min)
+    {
+      rk <- sum(brks < min)
+      colorTable <- colorTable[rk:(3*nb-1)]
+      brks <- brks[rk:(3*nb)]
+    }
+    else
+    {
+      rk <- sum(brks > max)
+      colorTable <- colorTable[1:(3*nb-1-rk)]
+      brks <- brks[1:(3*nb-rk)]
+    }
+  }
+  if(min*max >= 0)
+  {
+    if(min < 0)
+    {
+      colorTable <- designer.colors(nb-1, c( "blue","white"))
+      brks<- seq(min, 0, length.out = nb)
+    }
+    else
+    {
+      colorTable <- designer.colors(nb-1, c( "white","red"))
+      brks<- seq(0, max, length.out = nb)
+    }
+
+  }
+  return(list(col = colorTable, breaks = brks))
+}
+
+
+grayScale <- function(max, nb)
+{
+  colorTable <- designer.colors(nb-1, c("white", "black"))
+  brks<- seq(0, max, length.out = nb)
+  return(list(col = colorTable, breaks = brks))
+}
+
 
 
 ###
