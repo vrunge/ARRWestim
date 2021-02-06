@@ -59,14 +59,14 @@ library(fields)
 ### NB cores for parallel computing
 ###
 cores <- detectCores()
-cores <- 20
+cores <- 35
 #cores <- 8 ###CHANGE
 
 ###
 ### Simulations parameters
 ###
 #nbSimu <- 1200
-nbSimu <- 1000 ##CHANGE
+nbSimu <- 2000 ##CHANGE
 nbPhi <- 18 #step size = 0.05 in phi
 nbOmega2 <- 40
 nbK <- 10
@@ -115,7 +115,7 @@ for(i in phi)
                              sdNu = 1,
                              phi = i,
                              type = "rand1",
-                             nbSeg = 50,
+                             nbSeg = 40,
                              jumpSize = 10,
                              nbK = nbK,
                              varType = "MAD",
@@ -195,56 +195,38 @@ grayScale <- function(max, nb)
 ### Plot results
 ###
 
-plotSimu <- function(z1, w1, z2, w2, z3, w3,
+z1[,1] <- 0 #do not consider evaluation for sd_eta = 0 (because of division by 0)
+w1[,1] <- 0 #do not consider evaluation for sd_eta = 0 (because of division by 0)
+
+plotSimuScale <- function(z1, w1, z2, w2, z3, w3,
                      .phi = phi,
                      .logOmega2 = logOmega2,
                      .myscale = myscale,
                      .positions = positions)
 
 {
-  par(mfrow=c(3,2))
+  par(mfrow=c(2,3))
   #par(mar = c(3,4,2,3))
-  par(mar = c(3,4,3,3))###change
+  par(mar = c(4,4,3,3))###change
 
-  z1[,1] <- 0 #do not consider evaluation for sd_eta = 0 (because of division by 0)
-  w1[,1] <- 0 #do not consider evaluation for sd_eta = 0 (because of division by 0)
 
   #####sd_Eta
   u1 <- colScale(min = min(z1), max = max(z1), epsilon = abs(max(z1))/2, nb = 16)
   image.plot(.phi, .logOmega2, z1, breaks=u1$breaks, col=u1$col, axis.args=list(cex.axis=2),
              main = expression(E((hat(sigma)[eta]-sigma[eta] )/ sigma[eta])),
-             xlab = expression( phi ),
+             xlab = expression(paste("      ",  phi ) ),
              ylab = expression( omega^2 ),   mgp=c(2,2,0),
              cex.lab = 2, cex.main = 2, axes = FALSE,
              smallplot = c(0.85,0.89,0.13,0.91))
   axis(1, labels = c(0,0.2,0.4,0.6,0.8,0.95), at = c(0,0.2,0.4,0.6,0.8,0.95),cex.axis=2)
   axis(2, labels = .myscale, at = .positions,cex.axis=2)
 
-  v1 <- grayScale(max = max(w1),  nb = 20)
-  image.plot(.phi, .logOmega2,w1,breaks=v1$breaks, col=v1$col,axis.args=list(cex.axis=2),
-             main = expression(SD((hat(sigma)[eta]-sigma[eta] )/ sigma[eta])),
-             xlab = expression( phi ),
-             ylab = expression( omega^2 ),   mgp=c(2,2,0),
-             cex.lab = 2, cex.main = 2, axes = FALSE,
-             smallplot = c(0.85,0.89,0.13,0.91))
-  axis(1, labels = c(0,0.2,0.4,0.6,0.8,0.95), at = c(0,0.2,0.4,0.6,0.8,0.95),cex.axis=2)
-  axis(2, labels = .myscale, at = .positions,cex.axis=2)
 
   #####sd_Nu
   u2 <- colScale(min = min(z2), max = max(z2), epsilon = 0.1, nb = 16)
   image.plot(.phi, .logOmega2,z2,breaks=u2$breaks, col=u2$col ,axis.args=list(cex.axis=2),
              main = expression(E((hat(sigma)[nu]-sigma[nu] )/ sigma[nu])),
-             xlab = expression( phi ),
-             ylab = expression( omega^2 ),   mgp=c(2,2,0),
-             cex.lab = 2, cex.main = 2, axes = FALSE,
-             smallplot = c(0.85,0.89,0.13,0.91))
-  axis(1, labels = c(0,0.2,0.4,0.6,0.8,0.95), at = c(0,0.2,0.4,0.6,0.8,0.95),cex.axis=2)
-  axis(2, labels = .myscale, at = .positions,cex.axis=2)
-
-  v2 <- grayScale(max = max(w2),  nb = 20)
-  image.plot(.phi, .logOmega2,w2,breaks=v2$breaks, col=v2$col,axis.args=list(cex.axis=2),
-             main = expression(SD((hat(sigma)[nu]-sigma[nu] )/ sigma[nu])),
-             xlab = expression( phi ),
+             xlab = expression(paste("      ",  phi ) ),
              ylab = expression( omega^2 ),   mgp=c(2,2,0),
              cex.lab = 2, cex.main = 2, axes = FALSE,
              smallplot = c(0.85,0.89,0.13,0.91))
@@ -255,25 +237,49 @@ plotSimu <- function(z1, w1, z2, w2, z3, w3,
   u3 <- colScale(min = min(z3), max = max(z3), epsilon = abs(max(z3)/4), nb = 16)
   image.plot(.phi, .logOmega2,z3, breaks=u3$breaks, col=u3$col, axis.args=list(cex.axis=2),
              main = expression(E (hat(phi) - phi) ),
-             xlab = expression( phi ),
+             xlab = expression(paste("      ",  phi ) ),
              ylab = expression( omega^2 ), mgp=c(2,2,0),
              cex.lab = 2, cex.main = 2, axes = FALSE,
              smallplot = c(0.85,0.89,0.13,0.91))
   axis(1, labels = c(0,0.2,0.4,0.6,0.8,0.95), at = c(0,0.2,0.4,0.6,0.8,0.95),cex.axis=2)
   axis(2, labels = .myscale, at = .positions,cex.axis=2)
 
-  v3 <- grayScale(max = max(w3),  nb = 20)
-  image.plot(.phi, .logOmega2,w3,breaks=v3$breaks, col=v3$col,axis.args=list(cex.axis=2),
-             main = expression(SD (hat(phi) - phi)),
-             xlab = expression( phi ),
-             ylab = expression( omega^2 ),  mgp=c(2,2,0),
-             cex.lab = 2, cex.main = 2, axes = FALSE,
-             smallplot = c(0.85,0.89,0.13,0.91))
-  axis(1, labels = c(0,0.2,0.4,0.6,0.8,0.95), at = c(0,0.2,0.4,0.6,0.8,0.95),cex.axis=2)
-  axis(2, labels = .myscale, at = .positions,cex.axis=2)
+
+
+
+
+v1 <- grayScale(max = max(w1),  nb = 20)
+image.plot(.phi, .logOmega2,w1,breaks=v1$breaks, col=v1$col,axis.args=list(cex.axis=2),
+           main = expression(SD((hat(sigma)[eta]-sigma[eta] )/ sigma[eta])),
+           xlab = expression(paste("      ",  phi ) ),
+           ylab = expression( omega^2 ),   mgp=c(2,2,0),
+           cex.lab = 2, cex.main = 2, axes = FALSE,
+           smallplot = c(0.85,0.89,0.13,0.91))
+axis(1, labels = c(0,0.2,0.4,0.6,0.8,0.95), at = c(0,0.2,0.4,0.6,0.8,0.95),cex.axis=2)
+axis(2, labels = .myscale, at = .positions,cex.axis=2)
+
+
+v2 <- grayScale(max = max(w2),  nb = 20)
+image.plot(.phi, .logOmega2,w2,breaks=v2$breaks, col=v2$col,axis.args=list(cex.axis=2),
+           main = expression(SD((hat(sigma)[nu]-sigma[nu] )/ sigma[nu])),
+           xlab = expression(paste("      ",  phi ) ),
+           ylab = expression( omega^2 ),   mgp=c(2,2,0),
+           cex.lab = 2, cex.main = 2, axes = FALSE,
+           smallplot = c(0.85,0.89,0.13,0.91))
+axis(1, labels = c(0,0.2,0.4,0.6,0.8,0.95), at = c(0,0.2,0.4,0.6,0.8,0.95),cex.axis=2)
+axis(2, labels = .myscale, at = .positions,cex.axis=2)
+
+
+v3 <- grayScale(max = max(w3),  nb = 20)
+image.plot(.phi, .logOmega2,w3,breaks=v3$breaks, col=v3$col,axis.args=list(cex.axis=2),
+           main = expression(SD (hat(phi) - phi)),
+           xlab = expression(paste("      ",  phi ) ),
+           ylab = expression( omega^2 ),  mgp=c(2,2,0),
+           cex.lab = 2, cex.main = 2, axes = FALSE,
+           smallplot = c(0.85,0.89,0.13,0.91))
+axis(1, labels = c(0,0.2,0.4,0.6,0.8,0.95), at = c(0,0.2,0.4,0.6,0.8,0.95),cex.axis=2)
+axis(2, labels = .myscale, at = .positions,cex.axis=2)
 }
-
-
-plotSimu(z1_1, w1_1, z2_1, w2_1, z3_1, w3_1)
+plotSimuScale(z1, w1, z2, w2, z3, w3)
 
 
