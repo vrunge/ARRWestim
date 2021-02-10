@@ -1,6 +1,6 @@
+### FIGURES
 
-
-plotSimuScale(z1_1, w1_1, z2_1, w2_1, z3_1, w3_1)
+#plotSimuScale(z1_1, w1_1, z2_1, w2_1, z3_1, w3_1)
 
 ##################
 
