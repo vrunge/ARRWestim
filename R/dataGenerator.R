@@ -36,7 +36,7 @@ scenarioGenerator <- function(N, type = c("none", "up", "updown", "rand1"), nbSe
     #jump intensity
     set.seed(seed + 1)
     #rand1Jump <- runif(nbSeg, min = -1, max = 1)
-    rand1Jump <- runif(nbSeg, min = 0.5, max = 1)*sample(c(-1,1), size = nbSeg, replace = TRUE)
+    rand1Jump <- runif(nbSeg, min = 0.5, max = 1) * sample(c(-1,1), size = nbSeg, replace = TRUE)
   }
 
   switch(
