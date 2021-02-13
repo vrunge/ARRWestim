@@ -4,6 +4,17 @@ rm(list=ls())
 #devtools::install_github("gtromano/DeCAFS")
 #devtools::install_github("vrunge/ARRWestim")
 library(ARRWestim)
+library(parallel)
+library(fields)
+
+###
+### NB cores for parallel computing
+###
+cores <- detectCores()
+cores <- 60
+#cores <- 8 ###CHANGE
+
+
 one.simu <- function(i, N = 10^5, sdEta = 0.4, sdNu = 0.3, phi = 0.2,
                      type = "rand1", nbSeg = 10, jumpSize = 2, nbK = 10, varType = "MAD")
 {
@@ -25,15 +36,8 @@ one.simu <- function(i, N = 10^5, sdEta = 0.4, sdNu = 0.3, phi = 0.2,
               (res$EtaOpt - sdEta)/sdEta, (res$NuOpt-sdNu)/sdNu, res$argmin - phi)
   return(df)
 }
-library(parallel)
-library(fields)
 
-###
-### NB cores for parallel computing
-###
-cores <- detectCores()
-cores <- 60
-#cores <- 8 ###CHANGE
+########### ########### ########### ###########
 
 ###
 ### Simulations parameters
@@ -153,7 +157,6 @@ df3 <- do.call(rbind, res3)
 save(df1, file="df1.RData")
 save(df2, file="df2.RData")
 save(df3, file="df3.RData")
-
 
 
 dfmean_1 <- stats::aggregate(df1, list(rep(1:(nrow(df1)%/%nbSimu+1), each = nbSimu, len = nrow(df1))), base::mean)[-1]

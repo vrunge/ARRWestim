@@ -5,6 +5,16 @@ rm(list=ls())
 #devtools::install_github("vrunge/ARRWestim")
 library(DeCAFS)
 library(ARRWestim)
+library(parallel)
+library(fields)
+
+
+###
+### NB cores for parallel computing
+###
+cores <- detectCores()
+cores <- 60
+#cores <- 8 ###CHANGE
 
 one.simu.2stages <- function(i, N = 5*10^3, sdEta = 0.1, sdNu = 0.3, phi = 0.2,
                      type = "rand1", nbSeg = 10,
@@ -51,17 +61,8 @@ one.simu.2stages <- function(i, N = 5*10^3, sdEta = 0.1, sdNu = 0.3, phi = 0.2,
   return(df)
 }
 
-###################
+########### ########### ########### ###########
 
-library(parallel)
-library(fields)
-
-###
-### NB cores for parallel computing
-###
-cores <- detectCores()
-cores <- 35
-#cores <- 8 ###CHANGE
 
 ###
 ### Simulations parameters
@@ -123,6 +124,9 @@ for(i in phi)
                              mc.cores = cores)) ## mc.cores = 8
   }
 }
+
+########### ########### ########### ###########
+
 df_2stage <- do.call(rbind, res1)
 save(df_2stage, file="df_2stage.RData")
 
